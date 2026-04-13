@@ -1590,7 +1590,6 @@
     #modalOverlay,
     #debugOverlay,
     #tokenStatsOverlay,
-    #feedbackOverlay,
     #summarizeOverlay,
     #profileOverlay,
     #purchaseSonnetOverlay,
@@ -1599,9 +1598,6 @@
     #confirmDeleteChatOverlay,
     #confirmClearStorageOverlay,
     #confirmDeleteImagesOverlay,
-    #confirmDeleteAccountOverlay,
-    #confirmLogoutOverlay,
-    #confirmLocalOnlyDisableOverlay,
     #newPresetOverlay,
     #chatTitleOverlay,
     #cardActionOverlay,
@@ -1620,7 +1616,6 @@
     #modalOverlay.open,
     #debugOverlay.open,
     #tokenStatsOverlay.open,
-    #feedbackOverlay.open,
     #summarizeOverlay.open,
     #profileOverlay.open,
     #purchaseSonnetOverlay.open,
@@ -1629,9 +1624,6 @@
     #confirmDeleteChatOverlay.open,
     #confirmClearStorageOverlay.open,
     #confirmDeleteImagesOverlay.open,
-    #confirmDeleteAccountOverlay.open,
-    #confirmLogoutOverlay.open,
-    #confirmLocalOnlyDisableOverlay.open,
     #newPresetOverlay.open,
     #chatTitleOverlay.open,
     #cardActionOverlay.open,
@@ -1652,7 +1644,6 @@
     #modalOverlay .modal-window,
     #debugOverlay .modal-window,
     #tokenStatsOverlay .modal-window,
-    #feedbackOverlay .modal-window,
     #summarizeOverlay .modal-window,
     #profileOverlay .modal-window,
     #purchaseSonnetOverlay .modal-window,
@@ -1661,9 +1652,6 @@
     #confirmDeleteChatOverlay .modal-window,
     #confirmClearStorageOverlay .modal-window,
     #confirmDeleteImagesOverlay .modal-window,
-    #confirmDeleteAccountOverlay .modal-window,
-    #confirmLogoutOverlay .modal-window,
-    #confirmLocalOnlyDisableOverlay .modal-window,
     #newPresetOverlay .modal-window,
     #chatTitleOverlay .modal-window,
     #cardActionOverlay .modal-window,
@@ -1680,7 +1668,6 @@
       padding: 1rem;
     }
     #modalOverlay .modal-window,
-    #feedbackOverlay .modal-window,
     #tokenStatsOverlay .modal-window,
     #profileOverlay .modal-window,
     #purchaseSonnetOverlay .modal-window,
@@ -1689,9 +1676,6 @@
     #confirmDeleteChatOverlay .modal-window,
     #confirmClearStorageOverlay .modal-window,
     #confirmDeleteImagesOverlay .modal-window,
-    #confirmDeleteAccountOverlay .modal-window,
-    #confirmLogoutOverlay .modal-window,
-    #confirmLocalOnlyDisableOverlay .modal-window,
     #newPresetOverlay .modal-window,
     #chatTitleOverlay .modal-window,
     #cardActionOverlay .modal-window,
@@ -1757,11 +1741,6 @@
       width: min(980px, 94vw);
       max-height: 85vh;
     }
-    #feedbackOverlay .modal-window {
-      width: min(640px, 90vw);
-      max-height: 80vh;
-    }
-
     #tokenStatsOverlay .storage-usage-visual {
       position: relative;
       padding-top: 18px;
@@ -3032,42 +3011,6 @@
       </div>
     </div>
   </div>
-  <!-- Feedback modal overlay -->
-  <div id="feedbackOverlay" aria-hidden="true">
-    <div role="dialog" aria-modal="true" aria-labelledby="feedbackTitle" class="modal-window" tabindex="-1">
-      <div class="flex items-center justify-between mb-3">
-        <h3 id="feedbackTitle" class="text-base font-semibold">Feedback</h3>
-      </div>
-      <div class="text-sm text-gray-300 space-y-4">
-        <div>
-          <div id="feedbackEmotionGroup" class="feedback-emotion-group" role="group" aria-label="Select emotion for feedback">
-            <button type="button" class="feedback-emotion-btn" data-emotion="angry" aria-pressed="false" aria-label="Angry"><span class="feedback-emotion-emoji" aria-hidden="true">😡</span></button>
-            <button type="button" class="feedback-emotion-btn" data-emotion="sad" aria-pressed="false" aria-label="Sad"><span class="feedback-emotion-emoji" aria-hidden="true">😢</span></button>
-            <button type="button" class="feedback-emotion-btn" data-emotion="neutral" aria-pressed="false" aria-label="Neutral"><span class="feedback-emotion-emoji" aria-hidden="true">😐</span></button>
-            <button type="button" class="feedback-emotion-btn" data-emotion="happy" aria-pressed="false" aria-label="Happy"><span class="feedback-emotion-emoji" aria-hidden="true">🙂</span></button>
-            <button type="button" class="feedback-emotion-btn" data-emotion="very_happy" aria-pressed="false" aria-label="Very happy"><span class="feedback-emotion-emoji" aria-hidden="true">😄</span></button>
-          </div>
-          <input type="hidden" id="feedbackEmotionValue" value="" />
-        </div>
-        <div>
-          <textarea
-            id="feedbackText"
-            class="w-full bg-[#2B2B2B] border border-gray-600 text-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows="6"
-          ></textarea>
-        </div>
-        <div class="flex">
-          <button
-            type="button"
-            id="sendFeedbackBtn"
-            class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-700 bg-[#242424] px-5 py-3 text-base font-semibold text-gray-100 transition hover:border-gray-500 hover:bg-[#2E2E2E]"
-          >
-            Send
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
   <!-- Summarize modal overlay -->
   <div id="summarizeOverlay" aria-hidden="true">
     <div role="dialog" aria-modal="true" aria-labelledby="summarizeTitle" class="modal-window" tabindex="-1">
@@ -3613,112 +3556,6 @@
           <button
             type="button"
             id="cancelDeleteImagesBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-700 bg-[#242424] px-5 py-2.5 text-sm font-semibold text-gray-100 transition hover:border-gray-500 hover:bg-[#2E2E2E]"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Confirm delete account modal overlay -->
-  <div id="confirmDeleteAccountOverlay" aria-hidden="true">
-    <div role="dialog" aria-modal="true" aria-labelledby="confirmDeleteAccountTitle" class="modal-window" tabindex="-1">
-      <div class="flex items-center justify-between mb-3">
-        <h3 id="confirmDeleteAccountTitle" class="text-base font-semibold">Delete account?</h3>
-      </div>
-      <div class="text-sm text-gray-300 space-y-4">
-        <p id="confirmDeleteAccountMessage" class="text-gray-400">
-          This is permanent and will remove your account and all data. Type "confirm" to continue.
-        </p>
-        <input
-          id="confirmDeleteAccountInput"
-          type="text"
-          autocomplete="off"
-          placeholder='Type "confirm" to continue'
-          class="w-full rounded-lg border border-gray-700 bg-[#1f1f1f] px-4 py-3 text-sm text-gray-100 placeholder-gray-500 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/40"
-        />
-        <div class="flex flex-col gap-3 sm:flex-row">
-          <button
-            type="button"
-            id="confirmDeleteAccountBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-red-700 bg-[#241818] px-5 py-2.5 text-sm font-semibold text-red-100 transition hover:border-red-500 hover:bg-[#2d1b1b] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled
-            aria-disabled="true"
-          >
-            Yes, delete account
-          </button>
-          <button
-            type="button"
-            id="cancelDeleteAccountBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-700 bg-[#242424] px-5 py-2.5 text-sm font-semibold text-gray-100 transition hover:border-gray-500 hover:bg-[#2E2E2E]"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Confirm logout modal overlay -->
-  <div id="confirmLogoutOverlay" aria-hidden="true">
-    <div role="dialog" aria-modal="true" aria-labelledby="confirmLogoutTitle" class="modal-window" tabindex="-1">
-      <div class="flex items-center justify-between mb-3">
-        <h3 id="confirmLogoutTitle" class="text-base font-semibold">Log out?</h3>
-      </div>
-      <div class="text-sm text-gray-300 space-y-4">
-        <p id="confirmLogoutMessage" class="text-gray-400">Log out?</p>
-        <div class="flex flex-col gap-3 sm:flex-row">
-          <button
-            type="button"
-            id="confirmLogoutBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-red-700 bg-[#2a1515] px-5 py-2.5 text-sm font-semibold text-red-100 transition hover:border-red-500 hover:bg-[#311919]"
-          >
-            Yes, log out
-          </button>
-          <button
-            type="button"
-            id="cancelLogoutBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-700 bg-[#242424] px-5 py-2.5 text-sm font-semibold text-gray-100 transition hover:border-gray-500 hover:bg-[#2E2E2E]"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Confirm disable local only mode overlay -->
-  <div id="confirmLocalOnlyDisableOverlay" aria-hidden="true">
-    <div role="dialog" aria-modal="true" aria-labelledby="confirmLocalOnlyDisableTitle" class="modal-window" tabindex="-1">
-      <div class="flex items-center justify-between mb-3">
-        <h3 id="confirmLocalOnlyDisableTitle" class="text-base font-semibold">Disable local only mode?</h3>
-      </div>
-      <div class="text-sm text-gray-300 space-y-4">
-        <p id="confirmLocalOnlyDisableMessage" class="text-gray-400">
-          Turning this off will upload all locally stored cards and chats to the database. Continue?
-        </p>
-        <p id="confirmLocalOnlyDisableWarning" class="text-xs text-amber-200" hidden>
-          Warning: Disabling without upload can cause database data to overwrite local changes during the next sync.
-        </p>
-        <div id="confirmLocalOnlyDisableDetails" class="rounded-md border border-gray-700 bg-[#151515] px-3 py-2 text-xs text-gray-300 space-y-1"></div>
-        <div class="flex flex-col gap-3 sm:flex-row">
-          <button
-            type="button"
-            id="confirmLocalOnlyDisableBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-blue-700 bg-[#1e2a3a] px-5 py-2.5 text-sm font-semibold text-blue-100 transition hover:border-blue-500 hover:bg-[#24344a]"
-          >
-            Yes, upload and disable
-          </button>
-          <button
-            type="button"
-            id="skipLocalOnlyDisableBtn"
-            class="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-700 bg-[#1B1B1B] px-5 py-2.5 text-sm font-semibold text-gray-100 transition hover:border-gray-500 hover:bg-[#262626]"
-            hidden
-          >
-            Disable without upload
-          </button>
-          <button
-            type="button"
-            id="cancelLocalOnlyDisableBtn"
             class="flex-1 inline-flex items-center justify-center rounded-lg border border-gray-700 bg-[#242424] px-5 py-2.5 text-sm font-semibold text-gray-100 transition hover:border-gray-500 hover:bg-[#2E2E2E]"
           >
             Cancel
@@ -4412,13 +4249,11 @@
       const cardsBtn = document.querySelector('#sidebar .cards-btn');
       const presetBtn = document.querySelector('#sidebar .preset-btn');
       const infoBtn = document.querySelector('#sidebar .info-btn');
-      const feedbackBtn = document.querySelector('#sidebar .feedback-btn');
       const tokenStatsBtn = document.querySelector('#sidebar .token-stats-btn');
       const toastContainer = document.getElementById('toastContainer');
       const appVersionDisplay = document.getElementById('appVersionDisplay');
       const appVersion = 'v11.32';
       const appVersionMeta = document.querySelector('meta[name="app-version"]');
-      const googleClientId = '';
       const chatHeaderChatButtonWrap = document.getElementById('chatHeaderChatButtonWrap');
       const chatHeaderChatButton = document.getElementById('chatHeaderChatButton');
       const editChatTitleBtn = document.getElementById('editChatTitleBtn');
@@ -5168,13 +5003,7 @@
       const clearStorageBtnSettings = document.getElementById('clearStorageBtnSettings');
       const deleteAdditionalImagesBtnSettings = document.getElementById('deleteAdditionalImagesBtnSettings');
       const deleteAccountBtnSettings = document.getElementById('deleteAccountBtnSettings');
-      const feedbackOverlay = document.getElementById('feedbackOverlay');
-      const feedbackDialog = feedbackOverlay ? feedbackOverlay.querySelector('[role="dialog"]') : null;
       const closeFeedbackBtn = document.getElementById('closeFeedback');
-      const feedbackEmotionGroup = document.getElementById('feedbackEmotionGroup');
-      const feedbackEmotionValue = document.getElementById('feedbackEmotionValue');
-      const feedbackTextInput = document.getElementById('feedbackText');
-      const sendFeedbackBtn = document.getElementById('sendFeedbackBtn');
       const summarizeOverlay = document.getElementById('summarizeOverlay');
       const summarizeDialog = summarizeOverlay ? summarizeOverlay.querySelector('[role="dialog"]') : null;
       const closeSummarizeBtn = document.getElementById('closeSummarize');
@@ -5256,28 +5085,6 @@
       const confirmDeleteImagesMessage = document.getElementById('confirmDeleteImagesMessage');
       const confirmDeleteImagesBtn = document.getElementById('confirmDeleteImagesBtn');
       const cancelDeleteImagesBtn = document.getElementById('cancelDeleteImagesBtn');
-      const confirmDeleteAccountOverlay = document.getElementById('confirmDeleteAccountOverlay');
-      const confirmDeleteAccountDialog = confirmDeleteAccountOverlay
-        ? confirmDeleteAccountOverlay.querySelector('[role="dialog"]')
-        : null;
-      const confirmDeleteAccountMessage = document.getElementById('confirmDeleteAccountMessage');
-      const confirmDeleteAccountInput = document.getElementById('confirmDeleteAccountInput');
-      const confirmDeleteAccountBtn = document.getElementById('confirmDeleteAccountBtn');
-      const cancelDeleteAccountBtn = document.getElementById('cancelDeleteAccountBtn');
-      const confirmLogoutOverlay = document.getElementById('confirmLogoutOverlay');
-      const confirmLogoutDialog = confirmLogoutOverlay ? confirmLogoutOverlay.querySelector('[role="dialog"]') : null;
-      const confirmLogoutMessage = document.getElementById('confirmLogoutMessage');
-      const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
-      const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
-      const confirmLocalOnlyDisableOverlay = document.getElementById('confirmLocalOnlyDisableOverlay');
-      const confirmLocalOnlyDisableDialog = confirmLocalOnlyDisableOverlay
-        ? confirmLocalOnlyDisableOverlay.querySelector('[role="dialog"]')
-        : null;
-      const confirmLocalOnlyDisableTitle = document.getElementById('confirmLocalOnlyDisableTitle');
-      const confirmLocalOnlyDisableMessage = document.getElementById('confirmLocalOnlyDisableMessage');
-      const confirmLocalOnlyDisableWarning = document.getElementById('confirmLocalOnlyDisableWarning');
-      const confirmLocalOnlyDisableDetails = document.getElementById('confirmLocalOnlyDisableDetails');
-      const confirmLocalOnlyDisableBtn = document.getElementById('confirmLocalOnlyDisableBtn');
       const skipLocalOnlyDisableBtn = document.getElementById('skipLocalOnlyDisableBtn');
       const cancelLocalOnlyDisableBtn = document.getElementById('cancelLocalOnlyDisableBtn');
       const uploadPresetImageBtn = document.getElementById('uploadPresetImageBtn');
@@ -6051,13 +5858,7 @@
       const apiKeyOkBtn = document.getElementById('apiKeyOkBtn');
       const apiKeySettingsBtn = document.getElementById('apiKeySettingsBtn');
       const profileModalNameDisplay = document.getElementById('profileModalName');
-      const profileCookieField = document.getElementById('profileCookieField');
-      const editProfileCookieBtn = document.getElementById('editProfileCookieBtn');
-      const profileGoogleLoginBtn = document.getElementById('profileGoogleLoginBtn');
-      const profileGoogleLoginGsi = document.getElementById('profileGoogleLoginGsi');
-      const profileLogoutBtn = document.getElementById('profileLogoutBtn');
       const profileModalSubline = document.getElementById('profileModalSubline');
-      const profileModalProviderBadge = document.getElementById('profileModalProviderBadge');
       const profileModalAvatar = document.getElementById('profileModalAvatar');
 
       function resolvePaidWorkerEndpoint() {
@@ -6083,90 +5884,7 @@
 
       const paidWorkerEndpoint = resolvePaidWorkerEndpoint();
       const paidWorkerRegion = resolvePaidWorkerRegion();
-      let cachedProfileCookie = '';
       let cachedUserNameSettingValue = '';
-      let isProfileCookieEditing = false;
-      let profileCookieSetting = null;
-      let googleLinkSetting = null;
-      let googleLoginInfo = { name: '', email: '', picture: '' };
-      let autoDbSyncAbortController = null;
-      let autoDbSyncScheduled = false;
-
-      function cancelAutomaticDatabaseSync() {
-        return false;
-      }
-
-      function scheduleAutomaticDatabaseSyncCheck() {}
-
-      function normalizeProfileCookie(value) {
-        return typeof value === 'string' ? value.trim() : '';
-      }
-
-      function loadStoredProfileCookie() {
-        return '';
-      }
-
-      function persistProfileCookie(value) {
-        return normalizeProfileCookie(value);
-      }
-
-      function updateSidebarProfileCookie(rawValue) {
-        if (typeof rawValue === 'string') {
-          cachedProfileCookie = rawValue.trim();
-        }
-        const maxLen = 18;
-        const baseCookieText = cachedProfileCookie ? cachedProfileCookie.slice(0, 8) : '(...)';
-        const hasGoogleName = googleLoginInfo && typeof googleLoginInfo.name === 'string' && googleLoginInfo.name.trim();
-        const hasGoogleEmail = googleLoginInfo && typeof googleLoginInfo.email === 'string' && googleLoginInfo.email.trim();
-        let displayText = baseCookieText;
-        if (hasGoogleName || hasGoogleEmail) {
-          const nameOrEmail = (hasGoogleName ? googleLoginInfo.name : googleLoginInfo.email).trim();
-          displayText = nameOrEmail.length > maxLen ? `${nameOrEmail.slice(0, maxLen - 1)}…` : nameOrEmail;
-        }
-        if (sidebarPillNameDisplay) {
-          sidebarPillNameDisplay.textContent = displayText;
-          sidebarPillNameDisplay.classList.toggle('is-placeholder', !cachedProfileCookie);
-        }
-        updateSidebarProfileName(cachedUserNameSettingValue);
-      }
-
-      function setProfileCookieFieldText(nextValue) {
-        if (!profileCookieField) return;
-        profileCookieField.value = nextValue;
-      }
-
-      function startProfileCookieEdit() {
-        if (!profileCookieField) return;
-        isProfileCookieEditing = true;
-        profileCookieField.readOnly = false;
-        profileCookieField.removeAttribute('aria-readonly');
-        profileCookieField.removeAttribute('tabindex');
-        profileCookieField.classList.remove('cursor-default');
-        profileCookieField.classList.add('cursor-text');
-        profileCookieField.focus();
-        try {
-          profileCookieField.select();
-        } catch (_) {
-          // Ignore selection errors.
-        }
-      }
-
-      function finishProfileCookieEdit({ save = true } = {}) {
-        if (!profileCookieField) return;
-        let nextValue = cachedProfileCookie;
-        if (save) {
-          const persisted = persistProfileCookie(profileCookieField.value);
-          nextValue = persisted;
-        }
-        updateSidebarProfileCookie(nextValue);
-        setProfileCookieFieldText(nextValue || '');
-        profileCookieField.readOnly = true;
-        profileCookieField.setAttribute('aria-readonly', 'true');
-        profileCookieField.setAttribute('tabindex', '-1');
-        profileCookieField.classList.add('cursor-default');
-        profileCookieField.classList.remove('cursor-text');
-        isProfileCookieEditing = false;
-      }
 
       const defaultSidebarAvatarSrc = sidebarPillAvatar ? sidebarPillAvatar.getAttribute('src') : '';
       const defaultProfileModalAvatarSrc = profileModalAvatar ? profileModalAvatar.getAttribute('src') : '';
@@ -6178,451 +5896,6 @@
         }
         if (profileModalAvatar) {
           profileModalAvatar.src = normalized || defaultProfileModalAvatarSrc;
-        }
-      }
-
-      function updateGoogleLoginStatusDisplay(info = {}) {
-        const name = typeof info.name === 'string' ? info.name.trim() : '';
-        const email = typeof info.email === 'string' ? info.email.trim() : '';
-        const picture = typeof info.picture === 'string' ? info.picture.trim() : '';
-        const isConnected = !!(name || email || picture);
-
-        if (profileModalSubline) {
-          if (isConnected) {
-            profileModalSubline.textContent = email || '';
-            profileModalSubline.classList.toggle('hidden', !email);
-          } else {
-            profileModalSubline.textContent = '';
-            profileModalSubline.classList.add('hidden');
-          }
-        }
-        if (profileModalProviderBadge) {
-          profileModalProviderBadge.classList.toggle('hidden', !isConnected);
-        }
-
-        if (profileGoogleLoginBtn) {
-          profileGoogleLoginBtn.classList.toggle('hidden', isConnected);
-        }
-        if (profileLogoutBtn) {
-          profileLogoutBtn.classList.toggle('hidden', !isConnected);
-        }
-
-        updateProfileAvatars(picture);
-        updateSidebarProfileName(cachedUserNameSettingValue);
-      }
-
-      function setGoogleStatusMessage(message) {
-        if (!profileModalSubline || !profileModalProviderBadge || profileModalProviderBadge.classList.contains('hidden')) {
-          return;
-        }
-        if (typeof message === 'string') {
-          profileModalSubline.textContent = message;
-          profileModalSubline.classList.toggle('hidden', !message.trim());
-        }
-      }
-
-      function resetGoogleInitialization() {
-        googleInitPromise = null;
-        isGoogleInitialized = false;
-        if (typeof window !== 'undefined' && window.google && window.google.accounts && window.google.accounts.id) {
-          try {
-            window.google.accounts.id.cancel();
-          } catch (_) {
-            // Ignore cancel errors.
-          }
-        }
-      }
-
-      function normalizeGoogleLink(value) {
-        if (!value || typeof value !== 'object') return null;
-        const name = typeof value.name === 'string' ? value.name.trim() : '';
-        const email = typeof value.email === 'string' ? value.email.trim() : '';
-        const picture = typeof value.picture === 'string' ? value.picture.trim() : '';
-        const userId =
-          typeof value.userId === 'string'
-            ? normalizeProfileCookie(value.userId)
-            : typeof value.user_id === 'string'
-              ? normalizeProfileCookie(value.user_id)
-              : '';
-        if (!name && !email && !userId && !picture) return null;
-        return { name, email, userId, picture };
-      }
-
-      function persistGoogleLink(value) {
-        if (!googleLinkSetting) return null;
-        return googleLinkSetting.save(value);
-      }
-
-      function loadPersistedGoogleLink() {
-        if (!googleLinkSetting) return null;
-        return googleLinkSetting.load();
-      }
-
-      function decodeJwtPayload(token) {
-        if (typeof token !== 'string') return null;
-        const parts = token.split('.');
-        if (parts.length < 2) return null;
-        try {
-          const normalized = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-          const decoded = atob(normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '='));
-          return JSON.parse(decoded);
-        } catch (_) {
-          return null;
-        }
-      }
-
-      async function linkGoogleCredentialWithWorker(credential, { displayName = '', email = '' } = {}) {
-        throw new Error('Google account linking has been removed from the local-only app.');
-
-        const currentUserId = normalizeProfileCookie(loadStoredProfileCookie());
-        const response = await fetch(googleAuthEndpoint, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({
-            credential,
-            userId: currentUserId || undefined,
-            displayName,
-            email,
-          }),
-        });
-
-        let body = null;
-        try {
-          body = await response.json();
-        } catch (_) {
-          // Ignore parse errors, fall back to generic error handling.
-        }
-
-        if (!response.ok) {
-          const message =
-            body && typeof body.error === 'string' && body.error.trim()
-              ? body.error
-              : 'Failed to link Google account.';
-          throw new Error(message);
-        }
-
-        if (!body || typeof body !== 'object') {
-          throw new Error('Invalid response from Google auth service.');
-        }
-
-        const linkedUserId =
-          body && typeof body.user_id === 'string' ? normalizeProfileCookie(body.user_id) : '';
-        const linkedEmail =
-          body && typeof body.google_email === 'string' && body.google_email.trim()
-            ? body.google_email.trim()
-            : typeof email === 'string'
-              ? email.trim()
-              : '';
-        const linkedPicture =
-          body && typeof body.google_picture === 'string' && body.google_picture.trim()
-            ? body.google_picture.trim()
-            : '';
-
-        return {
-          userId: linkedUserId,
-          email: linkedEmail,
-          picture: linkedPicture,
-          isNewLink: !!(body && body.is_new_link),
-        };
-      }
-
-      function applyLinkedUserIdFromGoogle(nextUserId) {
-        const normalizedUserId = normalizeProfileCookie(nextUserId);
-        if (!normalizedUserId) return;
-        const persisted = persistProfileCookie(normalizedUserId);
-        cachedProfileCookie = persisted;
-        setProfileCookieFieldText(persisted);
-        updateSidebarProfileCookie(persisted);
-
-        // Reset caches/state tied to user-specific data so subsequent loads use the linked ID.
-        presetCache.clear();
-        cardAvatarUrlCache = new Map();
-        cachedDatabasePresets = [];
-        cachedDatabaseChats = [];
-        cardsDataLoaded = false;
-        cardsLoadedUserId = null;
-        activePresetDatabaseId = null;
-        activePresetAvatarUrl = null;
-        activeChatPresetId = null;
-        currentChatId = null;
-        currentChatTitle = '';
-        resetChatState({ history: [], resetComposer: true, closeChatWindow: false, focusComposer: false });
-        handleRouteChange();
-        scheduleAutomaticDatabaseSyncCheck({ reason: 'google-link', force: true });
-      }
-
-      function logoutUser({ requestNewCookie = true } = {}) {
-        cachedProfileCookie = '';
-        updateSidebarProfileName(cachedUserNameSettingValue);
-        updateProfileAvatars();
-        return;
-        const prevEmail = googleLoginInfo && typeof googleLoginInfo.email === 'string' ? googleLoginInfo.email : '';
-        persistGoogleLink(null);
-        googleLoginInfo = { name: '', email: '', picture: '' };
-        updateGoogleLoginStatusDisplay(googleLoginInfo);
-        setGoogleStatusMessage('Not connected');
-        if (typeof window !== 'undefined' && window.google && window.google.accounts && window.google.accounts.id) {
-          try {
-            if (prevEmail) {
-              window.google.accounts.id.revoke(prevEmail, () => {});
-            } else {
-              window.google.accounts.id.cancel();
-            }
-          } catch (_) {
-            // Ignore revoke/cancel errors.
-          }
-        }
-        resetGoogleInitialization();
-
-        cachedProfileCookie = '';
-        persistProfileCookie('');
-        setProfileCookieFieldText('');
-        updateSidebarProfileCookie('');
-
-        presetCache.clear();
-        cardAvatarUrlCache = new Map();
-        cachedDatabasePresets = [];
-        cachedDatabaseChats = [];
-        cardsDataLoaded = false;
-        cardsLoadedUserId = null;
-        activePresetDatabaseId = null;
-        activePresetAvatarUrl = null;
-        activeChatPresetId = null;
-        currentChatId = null;
-        currentChatTitle = '';
-        clearPresetStateAfterDelete();
-        renderCardsGrid([]);
-        resetChatState({ history: [], resetComposer: true, closeChatWindow: true, focusComposer: false });
-        handleRouteChange();
-
-        if (requestNewCookie) {
-          requestProfileCookieFromWorker();
-        }
-      }
-
-      function waitForGoogleLibrary(timeoutMs = 8000) {
-        if (typeof window !== 'undefined' && window.google && window.google.accounts && window.google.accounts.id) {
-          return Promise.resolve(window.google.accounts);
-        }
-        return new Promise((resolve, reject) => {
-          const start = Date.now();
-          const check = setInterval(() => {
-            if (typeof window !== 'undefined' && window.google && window.google.accounts && window.google.accounts.id) {
-              clearInterval(check);
-              resolve(window.google.accounts);
-            } else if (Date.now() - start > timeoutMs) {
-              clearInterval(check);
-              reject(new Error('Google Identity Services failed to load.'));
-            }
-          }, 80);
-        });
-      }
-
-      function renderGoogleLoginButton(accounts, options = {}) {
-        if (!accounts || !accounts.id || typeof accounts.id.renderButton !== 'function') return;
-        if (!profileGoogleLoginGsi || !profileGoogleLoginBtn) return;
-        const force = !!options.force;
-        const hasRenderedContent =
-          typeof profileGoogleLoginGsi.childElementCount === 'number' ? profileGoogleLoginGsi.childElementCount > 0 : !!profileGoogleLoginGsi.firstChild;
-        if (!force && profileGoogleLoginGsi.dataset && profileGoogleLoginGsi.dataset.gsiRendered === '1' && hasRenderedContent) return;
-        if (force) {
-          try {
-            profileGoogleLoginGsi.textContent = '';
-          } catch (_) {
-            // ignore
-          }
-          if (profileGoogleLoginGsi.dataset) {
-            delete profileGoogleLoginGsi.dataset.gsiRendered;
-          }
-        }
-
-        const rect =
-          typeof profileGoogleLoginBtn.getBoundingClientRect === 'function'
-            ? profileGoogleLoginBtn.getBoundingClientRect()
-            : { width: 0 };
-        const desiredWidth = Number.isFinite(rect.width) ? Math.round(rect.width) : 0;
-        const width = Math.max(180, Math.min(260, desiredWidth || 260));
-
-        try {
-          accounts.id.renderButton(profileGoogleLoginGsi, {
-            type: 'standard',
-            theme: 'outline',
-            size: 'large',
-            text: 'continue_with',
-            shape: 'rectangular',
-            logo_alignment: 'left',
-            width,
-          });
-          if (profileGoogleLoginGsi.dataset) {
-            profileGoogleLoginGsi.dataset.gsiRendered = '1';
-          }
-        } catch (err) {
-          console.warn('Failed to render Google login button', err);
-        }
-      }
-
-      async function ensureGoogleInitialized() {
-        return null;
-        if (isGoogleInitialized && typeof window !== 'undefined' && window.google && window.google.accounts) {
-          return window.google.accounts;
-        }
-        if (!googleInitPromise) {
-          googleInitPromise = (async () => {
-            const accounts = await waitForGoogleLibrary(15000);
-            if (!accounts || !accounts.id) return null;
-            accounts.id.initialize({ client_id: googleClientId, callback: handleGoogleCredentialResponse, ux_mode: 'popup' });
-            renderGoogleLoginButton(accounts);
-            isGoogleInitialized = true;
-            return accounts;
-          })().catch((err) => {
-            resetGoogleInitialization();
-            throw err;
-          });
-        }
-        return googleInitPromise;
-      }
-
-      async function handleGoogleCredentialResponse(response) {
-        if (!response || !response.credential) return;
-        const payload = decodeJwtPayload(response.credential);
-        if (!payload) return;
-        const displayName =
-          (typeof payload.name === 'string' && payload.name.trim()) ||
-          (typeof payload.given_name === 'string' && payload.given_name.trim()) ||
-          (typeof payload.email === 'string' && payload.email.split('@')[0]) ||
-          '';
-        const email = typeof payload.email === 'string' ? payload.email : '';
-        const picture = typeof payload.picture === 'string' ? payload.picture : '';
-        googleLoginInfo = { name: displayName, email, picture };
-        updateGoogleLoginStatusDisplay(googleLoginInfo);
-
-        if (isGoogleLinkInProgress) {
-          return;
-        }
-        isGoogleLinkInProgress = true;
-        if (profileGoogleLoginBtn) {
-          profileGoogleLoginBtn.setAttribute('aria-disabled', 'true');
-          profileGoogleLoginBtn.classList.add('opacity-60', 'pointer-events-none');
-        }
-        if (profileGoogleLoginGsi) {
-          profileGoogleLoginGsi.classList.add('pointer-events-none');
-        }
-        setGoogleStatusMessage('Linking Google account...');
-
-        try {
-          const linkResult = await linkGoogleCredentialWithWorker(response.credential, {
-            displayName,
-            email,
-          });
-          if (linkResult && linkResult.email) {
-            googleLoginInfo.email = linkResult.email;
-          }
-          if (linkResult && linkResult.picture) {
-            googleLoginInfo.picture = linkResult.picture;
-          }
-          updateGoogleLoginStatusDisplay(googleLoginInfo);
-          if (linkResult && linkResult.userId) {
-            applyLinkedUserIdFromGoogle(linkResult.userId);
-          }
-          persistGoogleLink({
-            name: googleLoginInfo.name,
-            email: googleLoginInfo.email,
-            picture: googleLoginInfo.picture,
-            userId: linkResult ? linkResult.userId : '',
-            lastLinkedAt: new Date().toISOString(),
-          });
-          const welcomeName = (googleLoginInfo.name || googleLoginInfo.email || '').trim();
-          showToast(welcomeName ? `Welcome, ${welcomeName}!` : 'Welcome!');
-          if (profileModal) {
-            profileModal.close();
-          }
-        } catch (err) {
-          console.error('Failed to link Google account', err);
-          showAppErrorMessage(err?.message || 'Google sign-in failed. Please try again.', { title: 'Google sign-in failed' });
-          updateGoogleLoginStatusDisplay(googleLoginInfo);
-        } finally {
-          isGoogleLinkInProgress = false;
-          if (profileGoogleLoginBtn) {
-            profileGoogleLoginBtn.removeAttribute('aria-disabled');
-            profileGoogleLoginBtn.classList.remove('opacity-60', 'pointer-events-none');
-          }
-          if (profileGoogleLoginGsi) {
-            profileGoogleLoginGsi.classList.remove('pointer-events-none');
-          }
-          updateGoogleLoginStatusDisplay(googleLoginInfo);
-        }
-      }
-
-      updateSidebarProfileCookie();
-
-      async function requestProfileCookieFromWorker() {
-        return;
-        const storedCookie = normalizeProfileCookie(loadStoredProfileCookie());
-        if (storedCookie) {
-          setProfileCookieFieldText(storedCookie);
-          updateSidebarProfileCookie(storedCookie);
-          return;
-        }
-        if (!cookieWorkerEndpoint) {
-          setProfileCookieFieldText('local only');
-          updateSidebarProfileCookie();
-          return;
-        }
-
-        if (profileCookieAbortController) {
-          try {
-            profileCookieAbortController.abort();
-          } catch (_) {
-            // Ignore abort errors.
-          }
-        }
-
-        profileCookieAbortController = typeof AbortController === 'function' ? new AbortController() : null;
-        setProfileCookieFieldText('requesting...');
-        updateSidebarProfileCookie();
-
-        try {
-          const response = await fetch(cookieWorkerEndpoint, {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-            },
-            body: JSON.stringify({ hasCookie: !!storedCookie }),
-            signal: profileCookieAbortController ? profileCookieAbortController.signal : undefined,
-          });
-
-          if (!response.ok) {
-            throw new Error('Worker responded with status ' + response.status);
-          }
-
-          let payload = null;
-          try {
-            payload = await response.json();
-          } catch (parseError) {
-            throw new Error('Invalid worker response');
-          }
-
-          const cookieValue = normalizeProfileCookie(
-            payload && typeof payload.cookie === 'string' ? payload.cookie : ''
-          );
-          if (!cookieValue) {
-            throw new Error('Worker response missing cookie');
-          }
-
-          const persistedCookie = persistProfileCookie(cookieValue);
-
-          setProfileCookieFieldText(persistedCookie);
-          updateSidebarProfileCookie(persistedCookie);
-          scheduleAutomaticDatabaseSyncCheck({ reason: 'cookie', force: true });
-        } catch (error) {
-          if (error && error.name === 'AbortError') {
-            return;
-          }
-          console.error('Failed to request cookie from worker', error);
-          setProfileCookieFieldText('unavailable');
-          updateSidebarProfileCookie();
-        } finally {
-          profileCookieAbortController = null;
         }
       }
 
@@ -6701,7 +5974,6 @@
       const autoRefreshSettingsRow = document.getElementById('autoRefreshSettingsRow');
       const streamingToggleInput = document.getElementById('streamingToggle');
       const thinkingToggleInput = document.getElementById('thinkingToggle');
-      const localOnlyModeToggleSettings = document.getElementById('localOnlyModeToggleSettings');
       const paidModeToggleSettings = document.getElementById('paidModeToggleSettings');
       const forceUseApiKeyToggleSettings = document.getElementById('forceUseApiKeyToggleSettings');
       const backtickDialogueToggle = document.getElementById('backtickDialogueToggle');
@@ -6763,7 +6035,6 @@
       const userNameStorageKey = 'simpletavern.userName';
       const profileCookieStorageKey = 'simpletavern.profileCookie';
       const localStorageNamespaceKey = 'simpletavern.localNamespaceId';
-      const googleLinkStorageKey = 'simpletavern.googleLink';
       const anthropicProxyEnabledPreferenceKey = 'simpletavern.anthropicProxyEnabled';
       const anthropicProxyEndpointStorageKey = 'simpletavern.anthropicProxyEndpoint';
       const anthropicProxyApiKeyStorageKey = 'simpletavern.anthropicProxyApiKey';
@@ -6775,7 +6046,6 @@
       const streamingPreferenceKey = 'simpletavern.streamingEnabled';
       const thinkingPreferenceKey = 'simpletavern.thinkingEnabled';
       const tokenStatsWindowPreferenceKey = 'simpletavern.tokenStats.window';
-      const localOnlyModePreferenceKey = 'simpletavern.localOnlyMode';
       const paidModePreferenceKey = 'simpletavern.paidMode';
       const forceUseApiKeyPreferenceKey = 'simpletavern.forceUseApiKey';
       const localLibraryMetaStorageKey = 'simpletavern.localdb.meta';
@@ -7881,14 +7151,9 @@
       let pendingClearStorageConfirmationDecision = null;
       let pendingDeleteImagesConfirmationResolve = null;
       let pendingDeleteImagesConfirmationDecision = null;
-      let pendingLogoutConfirmationResolve = null;
-      let pendingLogoutConfirmationDecision = null;
       let pendingChatDeleteId = null;
-      let pendingLocalOnlyDisableResolve = null;
-      let pendingLocalOnlyDisableDecision = null;
       let isClearingLocalStorage = false;
       let isDeletingAdditionalImages = false;
-      let isDeletingAccount = false;
       let isLocalOnlySyncInProgress = false;
       let presetDatabaseSaveInProgress = false;
       let presetDatabaseSaveTimer = null;
@@ -7926,9 +7191,6 @@
       let isBacktickDialogueDisplayEnabled = true;
       let lastThinkingCollapsed = true;
       let isCachingEnabled = false;
-      let googleInitPromise = null;
-      let isGoogleInitialized = false;
-      let isGoogleLinkInProgress = false;
       let hasPrimedCacheCountdown = false;
       let hasChatSessionStarted = false;
       let isCacheUiWaitingForResponse = false;
@@ -8848,10 +8110,6 @@
           console.warn('Failed to refresh token usage stats.', err);
         }
       };
-
-      function setFeedbackButtonState(isActive) {
-        setFooterButtonState(feedbackBtn, isActive);
-      }
 
       function setDebugButtonState(isActive) {
         setFooterButtonState(settingsDebugBtn, isActive);
@@ -11342,34 +10600,6 @@ Chat history:`;
         confirmDeleteImagesModal.close();
       }
 
-      function getDeleteAccountInputValue() {
-        if (!confirmDeleteAccountInput) return '';
-        return typeof confirmDeleteAccountInput.value === 'string' ? confirmDeleteAccountInput.value.trim() : '';
-      }
-
-      function setDeleteAccountButtonState({ disabled, label } = {}) {
-        if (!confirmDeleteAccountBtn) return;
-        if (typeof confirmDeleteAccountBtn.dataset.defaultLabel !== 'string' || !confirmDeleteAccountBtn.dataset.defaultLabel) {
-          confirmDeleteAccountBtn.dataset.defaultLabel =
-            typeof confirmDeleteAccountBtn.textContent === 'string' ? confirmDeleteAccountBtn.textContent : 'Yes, delete account';
-        }
-        if (typeof disabled === 'boolean') {
-          confirmDeleteAccountBtn.disabled = disabled;
-          confirmDeleteAccountBtn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
-        }
-        if (typeof label === 'string') {
-          confirmDeleteAccountBtn.textContent = label;
-        }
-      }
-
-      function setDeleteAccountConfirmState() {
-        if (!confirmDeleteAccountBtn) return;
-        if (isDeletingAccount) return;
-        const isConfirmed = getDeleteAccountInputValue().toLowerCase() === 'confirm';
-        confirmDeleteAccountBtn.disabled = !isConfirmed;
-        confirmDeleteAccountBtn.setAttribute('aria-disabled', isConfirmed ? 'false' : 'true');
-      }
-
       const clearStorageButtons = [clearStorageBtn, clearStorageBtnSettings].filter(Boolean);
 
       function setClearStorageButtonsState({ disabled, label } = {}) {
@@ -12528,416 +11758,6 @@ Chat history:`;
         updateActivePresetAvatarFromCache({ bustCache: false });
         if (!hydrated) {
           setCardsStatus('No local cards saved yet.');
-        }
-      }
-
-      async function runFullDatabaseSync({ mode = 'manual', reason = '', notifyOnNoChanges = true, signal } = {}) {
-        showAppToastMessage('Remote sync has been removed. Cards and chats are stored locally.');
-        return;
-        const normalizedMode = typeof mode === 'string' && mode.trim() ? mode.trim() : 'manual';
-        const resolvedReason = typeof reason === 'string' && reason.trim() ? reason.trim() : normalizedMode;
-        const showOverlay = normalizedMode !== 'auto';
-
-        if (isDbReadDisabled) {
-          if (normalizedMode === 'manual') {
-            showAppToastMessage('Local only mode is enabled. Turn it off to run a full sync.');
-          }
-          return;
-        }
-        const presetEndpoint = ensureEndpointAvailable(
-          presetApiEndpoint,
-          'Preset storage endpoint is not configured.',
-          normalizedMode === 'manual' ? (message) => showToast(message) : null,
-        );
-        if (!presetEndpoint) return;
-        const chatEndpoint = ensureEndpointAvailable(
-          chatApiEndpoint,
-          'Chat storage endpoint is not configured.',
-          normalizedMode === 'manual' ? (message) => showToast(message) : null,
-        );
-        if (!chatEndpoint) return;
-        const userId = ensureUserId(
-          normalizedMode === 'manual' ? () => showToast('No user ID is available. Request a cookie first.') : null,
-        );
-        if (!userId) return;
-
-        const previousPresetsIndex = sanitizePresetsIndexForLocalLibrary(localLibrary.getPresetsIndex());
-        const previousChatsIndex = sanitizeChatsIndexForLocalLibrary(localLibrary.getChatsIndex());
-        const previousAvatarKeyByPresetId = new Map(
-          previousPresetsIndex
-            .map((entry) => {
-              const id = typeof entry?.preset_id === 'string' ? entry.preset_id.trim() : '';
-              if (!id) return null;
-              const key = typeof entry?.avatar_r2_key === 'string' ? entry.avatar_r2_key : null;
-              return [id, key];
-            })
-            .filter(Boolean),
-        );
-        const previousPresetUpdatedAtById = new Map(
-          previousPresetsIndex
-            .map((entry) => {
-              const id = typeof entry?.preset_id === 'string' ? entry.preset_id.trim() : '';
-              if (!id) return null;
-              const updatedAt = typeof entry?.updated_at === 'string' ? entry.updated_at : null;
-              return [id, updatedAt];
-            })
-            .filter(Boolean),
-        );
-        const previousChatSignatureById = new Map(
-          previousChatsIndex
-            .map((entry) => {
-              const id = typeof entry?.chat_id === 'string' ? entry.chat_id.trim() : '';
-              if (!id) return null;
-              const lastUsed = typeof entry?.last_used === 'string' ? entry.last_used : null;
-              const messageCount =
-                typeof entry?.message_count === 'number'
-                  ? entry.message_count
-                  : Number(entry?.message_count);
-              const lastTokenCount =
-                typeof entry?.last_token_count === 'number'
-                  ? entry.last_token_count
-                  : Number(entry?.last_token_count);
-              return [
-                id,
-                {
-                  lastUsed,
-                  messageCount: Number.isFinite(messageCount) ? messageCount : null,
-                  lastTokenCount: Number.isFinite(lastTokenCount) ? lastTokenCount : null,
-                },
-              ];
-            })
-            .filter(Boolean),
-        );
-
-        const fetchPresetAvatarDataUrl = async (presetId) => {
-          const normalizedId = typeof presetId === 'string' ? presetId.trim() : '';
-          if (!normalizedId) return null;
-          const targetUrl = `${presetEndpoint}/${encodeURIComponent(normalizedId)}/avatar?userId=${encodeURIComponent(userId)}`;
-          try {
-            const response = await fetch(targetUrl, { method: 'GET', signal });
-            if (!response.ok) return null;
-            const blob = await response.blob();
-            if (!blob || !Number.isFinite(blob.size) || blob.size <= 0) return null;
-            const maxBytes = 5 * 1024 * 1024;
-            if (blob.size > maxBytes) {
-              console.warn('Skipping avatar download (too large)', { presetId: normalizedId, bytes: blob.size });
-              return null;
-            }
-            return await new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : null);
-              reader.onerror = () => resolve(null);
-              reader.readAsDataURL(blob);
-            });
-          } catch (error) {
-            console.warn('Failed to download preset avatar', { presetId: normalizedId, error });
-            return null;
-          }
-        };
-
-        if (fullDbSyncButton) {
-          fullDbSyncButton.disabled = true;
-          fullDbSyncButton.setAttribute('aria-disabled', 'true');
-        }
-        try {
-          if (showOverlay) {
-            openLoadingOverlay({ title: 'Full read from database', subtitle: 'Listing cards…' });
-          }
-          const presetListPayload = await requestJson(`${presetEndpoint}?userId=${encodeURIComponent(userId)}`, {
-            defaultError: 'Unable to list cards for sync.',
-            signal,
-          });
-          const presets = Array.isArray(presetListPayload?.presets) ? presetListPayload.presets : [];
-          markCardsDataLoaded(presets, userId);
-          renderCachedCardsIfAvailable();
-
-          if (showOverlay) {
-            openLoadingOverlay({ title: 'Full read from database', subtitle: 'Listing chats…' });
-          }
-          const chatListPayload = await requestJson(`${chatEndpoint}?userId=${encodeURIComponent(userId)}`, {
-            defaultError: 'Unable to list chats for sync.',
-            signal,
-          });
-          const chats = Array.isArray(chatListPayload?.chats) ? chatListPayload.chats : [];
-          cachedDatabaseChats = chats;
-          persistChatsIndexToLocalLibrary();
-
-          const nextPresetIndex = sanitizePresetsIndexForLocalLibrary(cachedDatabasePresets);
-          const nextPresetIds = new Set(nextPresetIndex.map((entry) => entry.preset_id));
-          const presetIds = Array.from(nextPresetIds);
-          const presetsToDownload = presetIds.filter((presetId) => {
-            const entry = getCachedPresetEntryById(presetId);
-            const currentUpdatedAt = typeof entry?.updated_at === 'string' ? entry.updated_at : null;
-            const previousUpdatedAt = previousPresetUpdatedAtById.get(presetId) || null;
-            let hasLocalDetail = true;
-            try {
-              hasLocalDetail = !!localLibrary.getPresetDetail(presetId);
-            } catch (_) {
-              hasLocalDetail = false;
-            }
-            if (!hasLocalDetail) return true;
-            if (currentUpdatedAt && previousUpdatedAt && currentUpdatedAt === previousUpdatedAt) return false;
-            if (!currentUpdatedAt && !previousUpdatedAt) return false;
-            return currentUpdatedAt !== previousUpdatedAt;
-          });
-          const avatarsToDownload = presetIds.filter((presetId) => {
-            const entry = getCachedPresetEntryById(presetId);
-            const avatarKey = typeof entry?.avatar_r2_key === 'string' ? entry.avatar_r2_key : null;
-            if (!avatarKey) return false;
-            const previousAvatarKey = previousAvatarKeyByPresetId.get(presetId) || null;
-            let existingLocalAvatar = null;
-            try {
-              existingLocalAvatar = localLibrary.getPresetAvatarDataUrl(presetId);
-            } catch (_) {
-              existingLocalAvatar = null;
-            }
-            if (!existingLocalAvatar) return true;
-            if (!previousAvatarKey) return true;
-            return previousAvatarKey !== avatarKey;
-          });
-          previousPresetsIndex.forEach((entry) => {
-            const id = typeof entry?.preset_id === 'string' ? entry.preset_id.trim() : '';
-            if (!id || nextPresetIds.has(id)) return;
-            try {
-              localLibrary.removePresetDetail(id);
-              localLibrary.removePresetAvatarDataUrl(id);
-            } catch (_) {}
-          });
-
-          const nextChatsIndex = sanitizeChatsIndexForLocalLibrary(cachedDatabaseChats);
-          const nextChatIds = new Set(nextChatsIndex.map((entry) => entry.chat_id));
-          const chatIds = Array.from(nextChatIds);
-          const nextChatSignatureById = new Map(
-            nextChatsIndex
-              .map((entry) => {
-                const id = typeof entry?.chat_id === 'string' ? entry.chat_id.trim() : '';
-                if (!id) return null;
-                return [
-                  id,
-                  {
-                    lastUsed: typeof entry?.last_used === 'string' ? entry.last_used : null,
-                    messageCount:
-                      typeof entry?.message_count === 'number'
-                        ? entry.message_count
-                        : Number(entry?.message_count),
-                    lastTokenCount:
-                      typeof entry?.last_token_count === 'number'
-                        ? entry.last_token_count
-                        : Number(entry?.last_token_count),
-                  },
-                ];
-              })
-              .filter(Boolean),
-          );
-          const chatsToDownload = chatIds.filter((chatId) => {
-            const current = nextChatSignatureById.get(chatId) || {
-              lastUsed: null,
-              messageCount: null,
-              lastTokenCount: null,
-            };
-            const currentSignature = {
-              messageCount: Number.isFinite(current.messageCount) ? current.messageCount : null,
-              lastTokenCount: Number.isFinite(current.lastTokenCount) ? current.lastTokenCount : null,
-            };
-            const previousSignature = previousChatSignatureById.get(chatId) || {
-              lastUsed: null,
-              messageCount: null,
-              lastTokenCount: null,
-            };
-            let hasLocalDetail = true;
-            try {
-              hasLocalDetail = localLibrary.getChatDetail(chatId) != null;
-            } catch (_) {
-              hasLocalDetail = false;
-            }
-            if (!hasLocalDetail) return true;
-            return (
-              currentSignature.messageCount !== previousSignature.messageCount ||
-              currentSignature.lastTokenCount !== previousSignature.lastTokenCount
-            );
-          });
-          previousChatsIndex.forEach((entry) => {
-            const id = typeof entry?.chat_id === 'string' ? entry.chat_id.trim() : '';
-            if (!id || nextChatIds.has(id)) return;
-            try {
-              localLibrary.removeChatDetail(id);
-            } catch (_) {}
-          });
-
-          const deletedPresetCount = previousPresetsIndex.filter((entry) => {
-            const id = typeof entry?.preset_id === 'string' ? entry.preset_id.trim() : '';
-            return !!id && !nextPresetIds.has(id);
-          }).length;
-          const deletedChatCount = previousChatsIndex.filter((entry) => {
-            const id = typeof entry?.chat_id === 'string' ? entry.chat_id.trim() : '';
-            return !!id && !nextChatIds.has(id);
-          }).length;
-
-          const changeSummary = `Detected: ${presetsToDownload.length} card updates, ${avatarsToDownload.length} image updates, ${chatsToDownload.length} chat updates, ${deletedPresetCount + deletedChatCount} deletions`;
-          if (
-            !presetsToDownload.length &&
-            !avatarsToDownload.length &&
-            !chatsToDownload.length &&
-            !deletedPresetCount &&
-            !deletedChatCount
-          ) {
-            if (showOverlay) {
-              closeLoadingOverlay();
-            }
-            if (notifyOnNoChanges) {
-              showToast('No changes detected.');
-            }
-            try {
-              localLibrary.setMeta({
-                lastFullSyncAt: new Date().toISOString(),
-                cards: presetIds.length,
-                chats: chatIds.length,
-                lastFullSyncMode: normalizedMode,
-                lastFullSyncReason: resolvedReason,
-              });
-            } catch (_) {}
-            renderCachedCardsIfAvailable();
-            updateActivePresetAvatarFromCache({ bustCache: false });
-            return;
-          }
-          if (normalizedMode === 'manual') {
-            showToast(changeSummary);
-          } else {
-            showToast('Syncing updates from database...');
-          }
-
-          for (let i = 0; i < presetsToDownload.length; i += 1) {
-            const presetId = presetsToDownload[i];
-            if (showOverlay) openLoadingOverlay({
-              title: 'Full read from database',
-              subtitle: `Downloading cards (${i + 1}/${presetsToDownload.length})…`,
-            });
-            const detail = await requestJson(
-              `${presetEndpoint}/${encodeURIComponent(presetId)}?userId=${encodeURIComponent(userId)}`,
-              {
-                defaultError: `Unable to download card ${presetId}.`,
-                signal,
-              },
-            );
-            const rawData = detail ? detail.data : null;
-            let parsed = rawData;
-            if (typeof rawData === 'string') {
-              try {
-                parsed = JSON.parse(rawData);
-              } catch (_) {
-                parsed = rawData;
-              }
-            }
-            const normalized = normalizePresetPayload(parsed);
-            localLibrary.setPresetDetail(presetId, normalized);
-            cachePresetPayload(presetId, normalized, localLibrary.getPresetAvatarDataUrl(presetId));
-          }
-
-          for (let i = 0; i < avatarsToDownload.length; i += 1) {
-            const presetId = avatarsToDownload[i];
-            const entry = getCachedPresetEntryById(presetId);
-            const avatarKey = typeof entry?.avatar_r2_key === 'string' ? entry.avatar_r2_key : null;
-            if (!avatarKey) continue;
-
-            if (showOverlay) openLoadingOverlay({
-              title: 'Full read from database',
-              subtitle: `Downloading card images (${i + 1}/${avatarsToDownload.length})…`,
-            });
-
-            const dataUrl = await fetchPresetAvatarDataUrl(presetId);
-            if (!dataUrl) continue;
-            try {
-              localLibrary.setPresetAvatarDataUrl(presetId, dataUrl);
-            } catch (_) {}
-            updateCachedPresetAvatar(presetId, { avatarUrl: dataUrl, avatarKey, userId });
-          }
-
-          for (let i = 0; i < chatsToDownload.length; i += 1) {
-            const chatId = chatsToDownload[i];
-            if (showOverlay) openLoadingOverlay({
-              title: 'Full read from database',
-              subtitle: `Downloading chats (${i + 1}/${chatsToDownload.length})…`,
-            });
-            const detail = await requestJson(
-              `${chatEndpoint}/${encodeURIComponent(chatId)}?userId=${encodeURIComponent(userId)}&touch=0`,
-              {
-                defaultError: `Unable to download chat ${chatId}.`,
-                signal,
-              },
-            );
-            const rawData = detail && typeof detail.data !== 'undefined' ? detail.data : null;
-            localLibrary.setChatDetail(chatId, rawData);
-          }
-
-          try {
-            localLibrary.setMeta({
-              lastFullSyncAt: new Date().toISOString(),
-              cards: presetIds.length,
-              chats: chatIds.length,
-              lastFullSyncMode: normalizedMode,
-              lastFullSyncReason: resolvedReason,
-            });
-          } catch (_) {}
-
-          renderCachedCardsIfAvailable();
-          updateActivePresetAvatarFromCache({ bustCache: false });
-          if (showOverlay) {
-            closeLoadingOverlay();
-          }
-          showToast(`${normalizedMode === 'manual' ? 'Full read' : 'Sync'} complete: ${presetIds.length} cards, ${chatIds.length} chats`);
-        } catch (err) {
-          if (showOverlay) {
-            closeLoadingOverlay();
-          }
-          throw err;
-        } finally {
-          if (fullDbSyncButton) {
-            fullDbSyncButton.disabled = isDbReadDisabled;
-            fullDbSyncButton.setAttribute('aria-disabled', (isDbReadDisabled ? 'true' : 'false'));
-          }
-        }
-      }
-
-      async function runAutomaticDatabaseSyncCheck({ reason = 'startup', force = false } = {}) {
-        return;
-        if (isLocalOnlyMode) return;
-        if (typeof navigator !== 'undefined' && navigator && navigator.onLine === false) return;
-        if (!presetApiEndpoint || !chatApiEndpoint) return;
-        const userId = ensureUserId(null);
-        if (!userId) return;
-        if (autoDbSyncAbortController) return;
-
-        const throttleMs = 5 * 60 * 1000;
-        if (!force) {
-          try {
-            const meta = localLibrary.getMeta();
-            const last = typeof meta?.lastAutoSyncCheckAt === 'string' ? meta.lastAutoSyncCheckAt : '';
-            const lastMs = last ? Date.parse(last) : NaN;
-            if (Number.isFinite(lastMs) && Date.now() - lastMs < throttleMs) {
-              return;
-            }
-          } catch (_) {}
-        }
-
-        try {
-          localLibrary.setMeta({
-            ...(localLibrary.getMeta() || {}),
-            lastAutoSyncCheckAt: new Date().toISOString(),
-            lastAutoSyncReason: typeof reason === 'string' ? reason : 'startup',
-          });
-        } catch (_) {}
-
-        cancelAutomaticDatabaseSync();
-        autoDbSyncAbortController = typeof AbortController === 'function' ? new AbortController() : null;
-        try {
-          await runFullDatabaseSync({
-            mode: 'auto',
-            reason,
-            notifyOnNoChanges: false,
-            signal: autoDbSyncAbortController ? autoDbSyncAbortController.signal : undefined,
-          });
-        } finally {
-          autoDbSyncAbortController = null;
         }
       }
 
@@ -14710,14 +13530,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           },
           onBeforeClose: () => setTokenStatsButtonState(false),
         },
-        {
-          key: 'feedbackModal',
-          name: 'feedback',
-          overlayElement: feedbackOverlay,
-          dialogElement: feedbackDialog,
-          onBeforeOpen: () => setFeedbackButtonState(true),
-          onBeforeClose: () => setFeedbackButtonState(false),
-        },
         { key: 'summarizeModal', name: 'summarize', overlayElement: summarizeOverlay, dialogElement: summarizeDialog },
         {
           key: 'forkModal',
@@ -14792,53 +13604,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
             resolve(decision);
           },
         },
-        {
-          key: 'confirmDeleteAccountModal',
-          name: 'confirmDeleteAccount',
-          overlayElement: confirmDeleteAccountOverlay,
-          dialogElement: confirmDeleteAccountDialog,
-          onBeforeOpen: () => {
-            isDeletingAccount = false;
-            if (confirmDeleteAccountInput) {
-              confirmDeleteAccountInput.value = '';
-              confirmDeleteAccountInput.disabled = false;
-              confirmDeleteAccountInput.setAttribute('aria-disabled', 'false');
-            }
-            if (cancelDeleteAccountBtn) {
-              cancelDeleteAccountBtn.disabled = false;
-              cancelDeleteAccountBtn.setAttribute('aria-disabled', 'false');
-            }
-            setDeleteAccountButtonState({ disabled: true, label: 'Yes, delete account' });
-          },
-        },
-        {
-          key: 'confirmLogoutModal',
-          name: 'confirmLogout',
-          overlayElement: confirmLogoutOverlay,
-          dialogElement: confirmLogoutDialog,
-          onBeforeClose: () => {
-            if (!pendingLogoutConfirmationResolve) return;
-            const decision = pendingLogoutConfirmationDecision === true;
-            const resolve = pendingLogoutConfirmationResolve;
-            pendingLogoutConfirmationResolve = null;
-            pendingLogoutConfirmationDecision = null;
-            resolve(decision);
-          },
-        },
-        {
-          key: 'confirmLocalOnlyDisableModal',
-          name: 'confirmLocalOnlyDisable',
-          overlayElement: confirmLocalOnlyDisableOverlay,
-          dialogElement: confirmLocalOnlyDisableDialog,
-          onBeforeClose: () => {
-            if (!pendingLocalOnlyDisableResolve) return;
-            const decision = pendingLocalOnlyDisableDecision;
-            const resolve = pendingLocalOnlyDisableResolve;
-            pendingLocalOnlyDisableResolve = null;
-            pendingLocalOnlyDisableDecision = null;
-            resolve(decision);
-          },
-        },
         { key: 'newPresetModal', name: 'newPreset', overlayElement: newPresetOverlay, dialogElement: newPresetDialog },
         { key: 'chatTitleModal', name: 'chatTitle', overlayElement: chatTitleOverlay, dialogElement: chatTitleDialog },
         { key: 'cardActionModal', name: 'cardAction', overlayElement: cardActionOverlay, dialogElement: cardActionDialog },
@@ -14870,7 +13635,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
       const {
         settingsModal,
         tokenStatsModal,
-        feedbackModal,
         summarizeModal,
         forkModal,
         loadingModal,
@@ -14880,9 +13644,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         confirmDeletePresetModal,
         confirmClearStorageModal,
         confirmDeleteImagesModal,
-        confirmDeleteAccountModal,
-        confirmLogoutModal,
-        confirmLocalOnlyDisableModal,
         newPresetModal,
         chatTitleModal,
         confirmDeleteChatModal,
@@ -15237,7 +13998,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           e.stopPropagation();
           e.preventDefault();
           debugModal.close();
-          feedbackModal.close();
           tokenStatsModal.close();
           settingsModal.open();
         });
@@ -15634,7 +14394,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           e.preventDefault();
           settingsModal.close();
           debugModal.close();
-          feedbackModal.close();
           tokenStatsModal.open();
         });
       }
@@ -15998,7 +14757,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           e.stopPropagation();
           e.preventDefault();
           settingsModal.close();
-          feedbackModal.close();
           tokenStatsModal.close();
           debugModal.open();
         });
@@ -16008,7 +14766,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           e.stopPropagation();
           e.preventDefault();
           settingsModal.close();
-          feedbackModal.close();
           tokenStatsModal.close();
           debugModal.open();
         });
@@ -16019,7 +14776,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           e.stopPropagation();
           settingsModal.close();
           debugModal.close();
-          feedbackModal.close();
           tokenStatsModal.close();
           profileModal.open();
         });
@@ -16064,12 +14820,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
       bindModalCloseInteractions({
         modal: tokenStatsModal,
         overlayElement: tokenStatsOverlay,
-        pressEventName,
-      });
-      bindModalCloseInteractions({
-        modal: feedbackModal,
-        overlayElement: feedbackOverlay,
-        closeButton: closeFeedbackBtn,
         pressEventName,
       });
       bindModalCloseInteractions({
@@ -16136,22 +14886,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
         modal: confirmClearStorageModal,
         overlayElement: confirmClearStorageOverlay,
         pressEventName,
-      });
-      bindModalCloseInteractions({
-        modal: confirmDeleteAccountModal,
-        overlayElement: confirmDeleteAccountOverlay,
-        pressEventName,
-      });
-      bindModalCloseInteractions({
-        modal: confirmLogoutModal,
-        overlayElement: confirmLogoutOverlay,
-        pressEventName,
-      });
-      bindModalCloseInteractions({
-        modal: confirmLocalOnlyDisableModal,
-        overlayElement: confirmLocalOnlyDisableOverlay,
-        pressEventName,
-      });
+      });
       bindModalCloseInteractions({
         modal: newPresetModal,
         overlayElement: newPresetOverlay,
@@ -16206,9 +14941,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
             handled = true;
           } else if (tokenStatsModal.isOpen()) {
             tokenStatsModal.close();
-            handled = true;
-          } else if (feedbackModal.isOpen()) {
-            feedbackModal.close();
             handled = true;
           } else if (debugModal.isOpen()) {
             debugModal.close();
@@ -16541,13 +15273,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         serialize: (value) => value,
         deserialize: (value) => value,
         shouldRemove: (value) => !value,
-      });
-      const localOnlyModePreferenceSetting = createStoredSetting({
-        key: localOnlyModePreferenceKey,
-        defaultValue: false,
-        normalize: (value) => !!value,
-        serialize: (value) => (value ? 'true' : 'false'),
-        deserialize: (value) => value === 'true',
       });
       const paidModePreferenceSetting = createStoredSetting({
         key: paidModePreferenceKey,
@@ -16962,9 +15687,8 @@ Write with love, write with audacity, and take initiative to drive the interacti
         notifyDbRestriction(message, options);
       }
 
-      function updateLocalOnlyToggleUI(enabled) {
-        if (!localOnlyModeToggleSettings) return;
-        localOnlyModeToggleSettings.checked = !!enabled;
+      function cancelAutomaticDatabaseSync() {
+        return false;
       }
 
       function setLocalOnlyMode(enabled, { persist = true, updateUI = true } = {}) {
@@ -16975,12 +15699,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           cancelPendingPresetDatabaseSave();
         } catch (_) {}
         cancelAutomaticDatabaseSync();
-        if (persist && typeof localOnlyModePreferenceSetting?.save === 'function') {
-          localOnlyModePreferenceSetting.save(true);
-        }
-        if (updateUI) {
-          updateLocalOnlyToggleUI(true);
-        }
       }
 
       async function uploadPresetAvatarForLocalSync({ presetId, dataUrl, userId, endpoint } = {}) {
@@ -19015,14 +17733,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
       } else {
         isForceUseApiKeyEnabled = forceUseApiKeyPreferenceSetting.load();
       }
-
-      if (localOnlyModeToggleSettings) {
-        setLocalOnlyMode(isLocalOnlyMode, { persist: false, updateUI: true });
-        localOnlyModeToggleSettings.disabled = true;
-        localOnlyModeToggleSettings.setAttribute('aria-disabled', 'true');
-      } else {
-        setLocalOnlyMode(isLocalOnlyMode, { persist: false, updateUI: false });
-      }
+      setLocalOnlyMode(isLocalOnlyMode, { persist: false, updateUI: false });
       if (anthropicProxyButton) {
         anthropicProxyButton.addEventListener('click', function() {
           const isHidden = anthropicProxyPanel && anthropicProxyPanel.classList.contains('hidden');
@@ -19065,7 +17776,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           if (tokenBubble.hidden) return;
           settingsModal.close();
           debugModal.close();
-          feedbackModal.close();
           tokenStatsModal.open();
         };
         tokenBubble.addEventListener('click', function(event) {
@@ -21146,7 +19856,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
           summarizeMessageInput.value = storedSummaryDraft || defaultSummaryDraft;
         }
         if (settingsModal) settingsModal.close();
-        if (feedbackModal) feedbackModal.close();
         if (debugModal) debugModal.close();
         if (profileModal) profileModal.close();
         if (forkModal) forkModal.close();

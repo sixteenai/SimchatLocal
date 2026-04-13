@@ -6705,7 +6705,7 @@
           return;
         }
         if (!cookieWorkerEndpoint) {
-          setProfileCookieFieldText('configure worker endpoint');
+          setProfileCookieFieldText('local only');
           updateSidebarProfileCookie();
           return;
         }
@@ -6896,6 +6896,7 @@
       const modelNameStorageKey = 'simpletavern.modelName';
       const userNameStorageKey = 'simpletavern.userName';
       const profileCookieStorageKey = 'simpletavern.profileCookie';
+      const localStorageNamespaceKey = 'simpletavern.localNamespaceId';
       const googleLinkStorageKey = 'simpletavern.googleLink';
       const anthropicProxyEnabledPreferenceKey = 'simpletavern.anthropicProxyEnabled';
       const anthropicProxyEndpointStorageKey = 'simpletavern.anthropicProxyEndpoint';
@@ -6949,9 +6950,47 @@
         return `${normalizedBase}::${normalizedUserId}`;
       }
 
+      function generateLocalRecordId(prefix = 'local') {
+        const normalizedPrefix = typeof prefix === 'string' && prefix.trim() ? prefix.trim() : 'local';
+        if (typeof crypto !== 'undefined' && crypto && typeof crypto.randomUUID === 'function') {
+          return `${normalizedPrefix}-${crypto.randomUUID()}`;
+        }
+        return `${normalizedPrefix}-${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+      }
+
+      function loadStoredLocalNamespaceId() {
+        if (typeof window === 'undefined') return '';
+        try {
+          const raw = localStorage.getItem(localStorageNamespaceKey);
+          return typeof raw === 'string' ? raw.trim() : '';
+        } catch (_) {
+          return '';
+        }
+      }
+
+      function getLocalStorageNamespaceId() {
+        const stored = loadStoredLocalNamespaceId();
+        if (stored) return stored;
+        const nextId = generateLocalRecordId('local');
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(localStorageNamespaceKey, nextId);
+          } catch (_) {
+            // Ignore storage errors and keep using the generated ID in memory.
+          }
+        }
+        return nextId;
+      }
+
+      function getActiveStorageNamespaceId({ create = true } = {}) {
+        const profileId = normalizeProfileCookie(loadStoredProfileCookie());
+        if (profileId) return profileId;
+        return create ? getLocalStorageNamespaceId() : loadStoredLocalNamespaceId();
+      }
+
       function getActiveUserScopedStorageKey(baseKey) {
         if (typeof window === 'undefined') return null;
-        const userId = normalizeProfileCookie(loadStoredProfileCookie());
+        const userId = getActiveStorageNamespaceId();
         return getScopedStorageKey(baseKey, userId);
       }
 
@@ -8916,8 +8955,7 @@
       }
 
       function hydratePresetsIndexFromLocalLibrary() {
-        const userId = normalizeProfileCookie(loadStoredProfileCookie());
-        if (!userId) return false;
+        const userId = getActiveStorageNamespaceId();
         const index = sanitizePresetsIndexForLocalLibrary(localLibrary.getPresetsIndex());
         if (!index.length) return false;
         cardsDataLoaded = true;
@@ -8927,8 +8965,10 @@
       }
 
       function persistPresetsIndexToLocalLibrary() {
-        const userId = normalizeProfileCookie(loadStoredProfileCookie());
-        if (!userId) return false;
+        const userId = getActiveStorageNamespaceId();
+        if (userId) {
+          cardsLoadedUserId = userId;
+        }
         const index = sanitizePresetsIndexForLocalLibrary(cachedDatabasePresets);
         return localLibrary.setPresetsIndex(index);
       }
@@ -8959,7 +8999,7 @@
         if (!mutated) return;
         persistPresetsIndexToLocalLibrary();
         if (normalizedAvatar) {
-          const userId = ensureUserId(() => null);
+          const userId = getActiveStorageNamespaceId({ create: false });
           if (userId) {
             const cacheKey = `${userId}::${normalizedId}`;
             cardAvatarUrlCache.set(cacheKey, normalizedAvatar);
@@ -9219,7 +9259,7 @@ Chat history:`;
         cachedDatabasePresets = Array.isArray(cachedDatabasePresets)
           ? ensureBuiltInSummarizePreset([entry, ...cachedDatabasePresets])
           : ensureBuiltInSummarizePreset([entry]);
-        const userId = ensureUserId(() => null);
+        const userId = getActiveStorageNamespaceId();
         if (userId) {
           cardsLoadedUserId = userId;
         }
@@ -9760,17 +9800,6 @@ Chat history:`;
       }
 
       function startBlankPresetFlow({ presetName = 'New Card', userId: providedUserId = null, endpoint: providedEndpoint = null } = {}) {
-        const endpoint = providedEndpoint || (pendingNewPresetContext && pendingNewPresetContext.endpoint) || ensureEndpointAvailable(
-          presetApiEndpoint,
-          'Preset storage endpoint is not configured.',
-          (message) => showAppToastMessage(message),
-        );
-        if (!endpoint) return;
-        const userId =
-          providedUserId ||
-          (pendingNewPresetContext && pendingNewPresetContext.userId) ||
-          ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-        if (!userId) return;
         pendingNewPresetContext = null;
         setActivePresetDatabaseId(null);
         pendingPresetAvatarDataUrl = null;
@@ -10023,19 +10052,11 @@ Chat history:`;
           </div>
         `;
         createCard.addEventListener('click', () => {
-          const endpoint = ensureEndpointAvailable(
-            presetApiEndpoint,
-            'Preset storage endpoint is not configured.',
-            (message) => showAppToastMessage(message),
-          );
-          if (!endpoint) return;
-          const userId = ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-          if (!userId) return;
-          pendingNewPresetContext = { userId, endpoint };
+          pendingNewPresetContext = null;
           if (newPresetModal) {
             newPresetModal.open();
           } else {
-            startBlankPresetFlow({ userId, endpoint });
+            startBlankPresetFlow();
           }
         });
         cardsGrid.appendChild(createCard);
@@ -13147,13 +13168,8 @@ Chat history:`;
       }
 
       function buildPresetDatabaseRequestContext(options = {}) {
-        const { silent = false } = options;
-        const endpoint = ensureEndpointAvailable(
-          presetApiEndpoint,
-          'Preset storage endpoint is not configured.',
-          silent ? null : (message) => showAppToastMessage(message),
-        );
-        if (!endpoint) return null;
+        const { silent = false, requireRemote = false } = options;
+        const endpoint = typeof presetApiEndpoint === 'string' ? presetApiEndpoint.trim() : '';
         updatePresetEstimatedTokens();
         const estimatedRaw = presetEstimatedTokensInput && typeof presetEstimatedTokensInput.value === 'string'
           ? Number.parseInt(presetEstimatedTokensInput.value, 10)
@@ -13175,17 +13191,74 @@ Chat history:`;
           }
           return null;
         }
-        const userId = ensureUserId(() => {
-          if (!silent) {
-            showAppToastMessage('No user ID is available. Request a cookie first.');
-          }
-        });
-        if (!userId) return null;
+        const userId = ensureUserId(null);
         const payload = buildPresetExportPayload(snapshot, presetName);
         if (estimatedTokenCount !== null) {
           payload.estimatedTokenCount = estimatedTokenCount;
         }
+        if (requireRemote && !endpoint) {
+          if (!silent) {
+            showAppToastMessage('Preset storage endpoint is not configured.');
+          }
+          return null;
+        }
+        if (requireRemote && !userId) {
+          if (!silent) {
+            showAppToastMessage('No user ID is available. Request a cookie first.');
+          }
+          return null;
+        }
         return { endpoint, presetName, snapshot, userId, payload };
+      }
+
+      async function savePresetLocally(
+        context,
+        { presetIdOverride = null, preserveAvatar = false, forceNewId = false } = {},
+      ) {
+        const { presetName, snapshot, payload } = context;
+        const existingPresetId =
+          forceNewId
+            ? ''
+            : (typeof presetIdOverride === 'string' && presetIdOverride.trim()
+            ? presetIdOverride.trim()
+            : (typeof activePresetDatabaseId === 'string' && activePresetDatabaseId.trim()
+              ? activePresetDatabaseId.trim()
+              : ''));
+        const presetId = existingPresetId || generateLocalRecordId('preset');
+        const normalized = normalizePresetPayload(payload);
+        localLibrary.setPresetDetail(presetId, normalized);
+        const avatarUrlOverride = (() => {
+          if (!preserveAvatar) return null;
+          const url = typeof activePresetAvatarUrl === 'string' ? activePresetAvatarUrl.trim() : '';
+          return url || null;
+        })();
+        const nowIso = new Date().toISOString();
+        const nextEntry = {
+          preset_id: presetId,
+          preset_name: presetName,
+          created_at: nowIso,
+          avatar_r2_key: null,
+          avatarUrlOverride,
+          estimated_token_count:
+            payload && Object.prototype.hasOwnProperty.call(payload, 'estimatedTokenCount')
+              ? payload.estimatedTokenCount
+              : null,
+        };
+        const existing = Array.isArray(cachedDatabasePresets) ? cachedDatabasePresets : [];
+        cachedDatabasePresets = ensureBuiltInSummarizePreset([
+          nextEntry,
+          ...existing.filter((entry) => {
+            const id = typeof entry?.preset_id === 'string' ? entry.preset_id.trim() : '';
+            return !id || id !== presetId;
+          }),
+        ]);
+        persistPresetsIndexToLocalLibrary();
+        setActivePresetDatabaseId(presetId);
+        persistPresetSnapshot(snapshot, presetName);
+        persistedPresetBlocks = snapshot;
+        persistedPresetName = presetName;
+        renderCachedCardsIfAvailable();
+        return { presetId, presetData: nextEntry };
       }
 
       async function createPresetInDatabase(
@@ -13266,12 +13339,11 @@ Chat history:`;
 
       async function handlePresetDatabaseClone(options = {}) {
         const { refreshOptions = null } = options || {};
-        if (isDbWriteDisabled) {
-          showAppToastMessage('Local only mode is enabled.');
-          return null;
-        }
         const context = buildPresetDatabaseRequestContext();
         if (!context) return null;
+        if (isDbWriteDisabled || !context.endpoint || !context.userId) {
+          return savePresetLocally(context, { preserveAvatar: true, forceNewId: true });
+        }
         const sourcePresetId = activePresetDatabaseId;
         const result = await createPresetInDatabase(context, {
           avatarSourcePresetId: sourcePresetId,
@@ -13284,12 +13356,6 @@ Chat history:`;
 
       async function handlePresetDatabaseUpdate(options = {}) {
         const { silent = false, presetIdOverride = null } = options;
-        if (isDbWriteDisabled) {
-          if (!silent) {
-            showAppToastMessage('Local only mode is enabled.');
-          }
-          return;
-        }
         if (presetDatabaseSaveInProgress) return;
         const presetId =
           typeof presetIdOverride === 'string' && presetIdOverride.trim()
@@ -13301,6 +13367,13 @@ Chat history:`;
         }
         const context = buildPresetDatabaseRequestContext({ silent });
         if (!context) return;
+        if (isDbWriteDisabled || !context.endpoint || !context.userId) {
+          await savePresetLocally(context, {
+            presetIdOverride: presetId,
+            preserveAvatar: true,
+          });
+          return;
+        }
         presetDatabaseSaveInProgress = true;
         try {
           if (!presetId) {
@@ -14345,6 +14418,79 @@ Chat history:`;
         return { title, data: payloadData, presetId: activePresetDatabaseId };
       }
 
+      function buildLocalChatEntry({
+        chatId,
+        presetId = '',
+        title = '',
+        payloadData = {},
+        existingEntry = null,
+      } = {}) {
+        const nowIso = new Date().toISOString();
+        const normalizedChatId = typeof chatId === 'string' ? chatId.trim() : '';
+        const normalizedPresetId = typeof presetId === 'string' ? presetId.trim() : '';
+        const normalizedTitle = typeof title === 'string' && title.trim() ? title.trim() : normalizedChatId;
+        return {
+          chat_id: normalizedChatId,
+          preset_id: normalizedPresetId || null,
+          title: normalizedTitle,
+          created_at:
+            existingEntry && typeof existingEntry.created_at === 'string' && existingEntry.created_at.trim()
+              ? existingEntry.created_at
+              : nowIso,
+          updated_at: nowIso,
+          last_used: nowIso,
+          message_count: Array.isArray(payloadData?.entries) ? payloadData.entries.length : null,
+          last_token_count:
+            payloadData && Object.prototype.hasOwnProperty.call(payloadData, 'lastTokenCount')
+              ? payloadData.lastTokenCount
+              : null,
+        };
+      }
+
+      function persistLocalChatRecord({
+        chatId,
+        presetId = '',
+        title = '',
+        payloadData = {},
+        updateRoute = false,
+      } = {}) {
+        const normalizedChatId = typeof chatId === 'string' ? chatId.trim() : '';
+        if (!normalizedChatId) return null;
+        localLibrary.setChatDetail(normalizedChatId, payloadData);
+        const existing = Array.isArray(cachedDatabaseChats) ? cachedDatabaseChats : [];
+        const existingEntry = existing.find((chat) => {
+          const id = typeof chat?.chat_id === 'string' ? chat.chat_id.trim() : '';
+          return id && id === normalizedChatId;
+        }) || null;
+        const nextEntry = buildLocalChatEntry({
+          chatId: normalizedChatId,
+          presetId,
+          title,
+          payloadData,
+          existingEntry,
+        });
+        cachedDatabaseChats = [nextEntry].concat(
+          existing.filter((chat) => {
+            const id = typeof chat?.chat_id === 'string' ? chat.chat_id.trim() : '';
+            return !id || id !== normalizedChatId;
+          }),
+        );
+        persistChatsIndexToLocalLibrary();
+        currentChatId = normalizedChatId;
+        currentChatTitle = nextEntry.title;
+        activeChatPresetId = nextEntry.preset_id;
+        const activityUserId = getActiveStorageNamespaceId();
+        if (activityUserId && nextEntry.preset_id) {
+          rememberCardChatActivity(activityUserId, nextEntry.preset_id, Date.now());
+          invalidateCardChatListCacheEntry(activityUserId, nextEntry.preset_id);
+        }
+        if (updateRoute) {
+          syncRouteHash(buildChatHash(normalizedChatId), { replace: true });
+        }
+        updateChatHeaderChatButton();
+        return nextEntry;
+      }
+
       async function saveChatToDatabase({ showAlerts = false } = {}) {
         const hasHistory = Array.isArray(chatHistory) && chatHistory.length > 0;
         if (!hasHistory) {
@@ -14353,34 +14499,34 @@ Chat history:`;
           }
           return;
         }
-        if (isDbWriteDisabled) {
-          if (showAlerts) {
-            showAppToastMessage('Local only mode is enabled.');
-          } else {
-            notifyDbWriteDisabled('Local only mode is enabled: not saving chat.');
-          }
-          return;
-        }
-        const context = withChatApiContext({
-          onMissingEndpoint: (message) => {
-            if (showAlerts) {
-              showAppToastMessage(message);
-            }
-          },
-          onMissingUser: () => {
-            if (showAlerts) {
-              showAppToastMessage('No user ID is available. Request a cookie first.');
-            }
-          },
-          handler: ({ endpoint, userId }) => ({ endpoint, userId }),
-        });
-        if (!context) return;
-        const { endpoint, userId } = context;
         const payload = buildChatDatabasePayload();
         const presetId = payload.presetId;
         if (!presetId) {
           if (showAlerts) {
             showAppToastMessage('No card is selected. Please save or load a card first.');
+          }
+          return;
+        }
+        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
+        const userId = ensureUserId(null);
+        if (isDbWriteDisabled || !endpoint || !userId) {
+          const localChatId =
+            typeof currentChatId === 'string' && currentChatId.trim()
+              ? currentChatId.trim()
+              : generateLocalRecordId('chat');
+          persistLocalChatRecord({
+            chatId: localChatId,
+            presetId,
+            title: payload.title,
+            payloadData: payload.data,
+            updateRoute:
+              typeof window !== 'undefined'
+              && window.location
+              && typeof window.location.hash === 'string'
+              && window.location.hash.trim() === hashRouteChat,
+          });
+          if (showAlerts) {
+            showAppToastMessage('Chat saved locally.');
           }
           return;
         }
@@ -14485,17 +14631,6 @@ Chat history:`;
       }
 
       async function forkChatToDatabase(direction, targetEntry = null) {
-        if (isDbWriteDisabled) {
-          showAppToastMessage('Local only mode is enabled.');
-          return null;
-        }
-        const context = withChatApiContext({
-          onMissingEndpoint: (message) => showAppToastMessage(message),
-          onMissingUser: () => showAppToastMessage('No user ID is available. Request a cookie first.'),
-          handler: ({ endpoint, userId }) => ({ endpoint, userId }),
-        });
-        if (!context) return;
-        const { endpoint, userId } = context;
         const presetId = activePresetDatabaseId;
         if (!presetId) {
           showAppToastMessage('No card is selected. Please save or load a card first.');
@@ -14522,6 +14657,18 @@ Chat history:`;
 
         const forkTitle = `${generateChatTitle(presetId, '', { excludeChatId: null })} (forked ${directionKey})`;
         const payloadData = { entries };
+        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
+        const userId = ensureUserId(null);
+        if (isDbWriteDisabled || !endpoint || !userId) {
+          const localChatId = generateLocalRecordId('chat');
+          persistLocalChatRecord({
+            chatId: localChatId,
+            presetId,
+            title: forkTitle,
+            payloadData,
+          });
+          return localChatId;
+        }
 
         try {
           const body = await requestJson(endpoint, {
@@ -14574,18 +14721,6 @@ Chat history:`;
       }
 
       async function forkChatWithSummaryHistory(newHistory) {
-        if (isDbWriteDisabled) {
-          showAppToastMessage('Local only mode is enabled.');
-          return null;
-        }
-        const context = withChatApiContext({
-          onMissingEndpoint: (message) => showAppToastMessage(message),
-          onMissingUser: () => showAppToastMessage('No user ID is available. Request a cookie first.'),
-          defaultValue: null,
-          handler: ({ endpoint, userId }) => ({ endpoint, userId }),
-        });
-        if (!context) return null;
-        const { endpoint, userId } = context;
         const presetId = typeof activePresetDatabaseId === 'string' ? activePresetDatabaseId.trim() : '';
         const entries = normalizeChatEntriesForDatabase(newHistory);
         if (!entries.length) {
@@ -14594,6 +14729,18 @@ Chat history:`;
         }
         const forkTitle = `${generateChatTitle(presetId, '', { excludeChatId: null })} (summary)`;
         const payloadData = { entries };
+        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
+        const userId = ensureUserId(null);
+        if (isDbWriteDisabled || !endpoint || !userId) {
+          const localChatId = generateLocalRecordId('chat');
+          persistLocalChatRecord({
+            chatId: localChatId,
+            presetId,
+            title: forkTitle,
+            payloadData,
+          });
+          return localChatId;
+        }
 
         try {
           const body = await requestJson(endpoint, {
@@ -14666,7 +14813,7 @@ Chat history:`;
       function optimisticallyRemovePresetFromCache(presetId) {
         if (!presetId) return;
         if (isBuiltInSummarizePresetId(presetId)) return;
-        const userId = ensureUserId(() => null);
+        const userId = getActiveStorageNamespaceId({ create: false });
         if (userId) {
           cardsLoadedUserId = userId;
         }
@@ -14695,16 +14842,7 @@ Chat history:`;
       }
 
       async function handlePresetDatabaseDelete(presetId) {
-        if (isDbWriteDisabled) {
-          showAppToastMessage('Local only mode is enabled.');
-          return;
-        }
-        const endpoint = ensureEndpointAvailable(
-          presetApiEndpoint,
-          'Preset storage endpoint is not configured.',
-          (message) => showAppToastMessage(message),
-        );
-        if (!endpoint) return;
+        const endpoint = typeof presetApiEndpoint === 'string' ? presetApiEndpoint.trim() : '';
         const normalizedPresetId = typeof presetId === 'string' ? presetId.trim() : '';
         if (isBuiltInSummarizePresetId(normalizedPresetId)) {
           showAppToastMessage('The summarize preset is built in and cannot be deleted.');
@@ -14714,13 +14852,19 @@ Chat history:`;
           showAppToastMessage('Unable to delete preset: missing preset ID.');
           return;
         }
-        const userId = ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-        if (!userId) return;
-        cardsLoadedUserId = userId;
         const presetName =
           (typeof pendingDeletePresetName === 'string' && pendingDeletePresetName.trim())
             ? pendingDeletePresetName.trim()
             : findCachedPresetName(normalizedPresetId) || 'Card';
+        const userId = ensureUserId(null);
+        if (userId) {
+          cardsLoadedUserId = userId;
+        }
+        if (isDbWriteDisabled || !endpoint || !userId) {
+          optimisticallyRemovePresetFromCache(normalizedPresetId);
+          showToast(`Deleted "${presetName}"`);
+          return;
+        }
         try {
           await requestJson(
             `${endpoint}/${encodeURIComponent(normalizedPresetId)}?userId=${encodeURIComponent(userId)}`,
@@ -22447,8 +22591,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
 
       function hydrateChatsIndexFromLocalLibrary() {
-        const userId = normalizeProfileCookie(loadStoredProfileCookie());
-        if (!userId) return false;
+        const userId = getActiveStorageNamespaceId();
         const index = sanitizeChatsIndexForLocalLibrary(localLibrary.getChatsIndex());
         if (!index.length) return false;
         cachedDatabaseChats = index;
@@ -22456,7 +22599,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
 
       function persistChatsIndexToLocalLibrary() {
-        const userId = normalizeProfileCookie(loadStoredProfileCookie());
+        const userId = getActiveStorageNamespaceId();
         if (!userId) return false;
         const index = sanitizeChatsIndexForLocalLibrary(cachedDatabaseChats);
         return localLibrary.setChatsIndex(index);
@@ -22611,23 +22754,13 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
 
       async function handleChatDatabaseDelete(chatId, options = {}) {
-        const endpoint = ensureEndpointAvailable(
-          chatApiEndpoint,
-          'Chat storage endpoint is not configured.',
-          (message) => showAppToastMessage(message),
-        );
-        if (!endpoint) return;
+        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
         const normalizedChatId = typeof chatId === 'string' ? chatId.trim() : '';
         if (!normalizedChatId) {
           showAppToastMessage('Unable to delete chat: missing chat ID.');
           return;
         }
-        const userId = ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-        if (!userId) return;
-        if (isDbWriteDisabled) {
-          showAppToastMessage('Local only mode is enabled.');
-          return;
-        }
+        const userId = ensureUserId(null);
 
         const {
           renderTarget = null,
@@ -22696,9 +22829,17 @@ Write with love, write with audacity, and take initiative to drive the interacti
           });
         }
         if (normalizedFilter) {
-          rememberCardChatActivity(userId, normalizedFilter, Date.now());
-          rememberCardChatListCacheEntry(userId, normalizedFilter, filteredChats, Date.now());
+          const activityUserId = userId || getActiveStorageNamespaceId({ create: false });
+          if (activityUserId) {
+            rememberCardChatActivity(activityUserId, normalizedFilter, Date.now());
+            rememberCardChatListCacheEntry(activityUserId, normalizedFilter, filteredChats, Date.now());
+          }
           updateCardChatBadgeCount(normalizedFilter, filteredChats.length);
+        }
+
+        if (isDbWriteDisabled || !endpoint || !userId) {
+          showToast(`Deleted chat "${deletedChatTitle}"`);
+          return;
         }
 
         try {

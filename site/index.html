@@ -4,14 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SimChat</title>
-  <meta name="cookie-worker-endpoint" content="" />
   <meta name="db-worker-endpoint" content="" />
   <meta name="paid-worker-endpoint" content="" />
   <meta name="paid-worker-region" content="" />
   <meta name="app-version" content="" />
-  <meta name="google-client-id" content="" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
       --chat-message-font-size: 0.95rem;
@@ -2275,14 +2272,6 @@
           </svg>
           <span>Statistics</span>
         </button>
-        <button type="button" class="feedback-btn" aria-label="Open feedback window" aria-pressed="false">
-          <svg class="sidebar-btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5" />
-            <path d="M9 10h.01M15 10h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M9 14.5c1.8 1.4 4.2 1.4 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          <span>Feedback</span>
-        </button>
         <button type="button" class="settings-btn" aria-label="Open settings" aria-pressed="false">
           <svg class="sidebar-btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.5" />
@@ -2610,22 +2599,9 @@
                 ></span>
               </label>
             </div>
-            <div class="flex items-center justify-between gap-4 rounded-lg border border-gray-700 bg-[#1E1E1E] px-3 py-3">
-              <div>
-                <p class="text-sm font-medium text-gray-200">Local only mode</p>
-                <p class="text-xs text-gray-400">Disable all database reads and writes. Syncing pauses until you turn this off.</p>
-              </div>
-              <label class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center">
-                <input type="checkbox" id="localOnlyModeToggleSettings" class="peer sr-only" aria-label="Toggle local only mode" />
-                <span
-                  class="pointer-events-none inline-block h-full w-full rounded-full bg-gray-700 transition peer-checked:bg-blue-600 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-blue-400"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="pointer-events-none absolute left-1 top-1 h-4 w-4 rounded-full bg-gray-300 transition-transform peer-checked:translate-x-5 peer-checked:bg-white"
-                  aria-hidden="true"
-                ></span>
-              </label>
+            <div class="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-3">
+              <p class="text-sm font-medium text-emerald-100">Local storage is the source of truth</p>
+              <p class="text-xs text-emerald-50/80">Cards, chats, and related app data stay on this device.</p>
             </div>
             <button
               type="button"
@@ -2708,13 +2684,6 @@
                 class="w-full rounded-lg border border-red-700 bg-[#241818] px-3 py-3 text-sm font-semibold text-red-100 transition hover:border-red-500 hover:bg-[#2d1b1b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
               >
                 Delete additional images
-              </button>
-              <button
-                type="button"
-                id="deleteAccountBtnSettings"
-                class="w-full rounded-lg border border-red-700 bg-[#241818] px-3 py-3 text-sm font-semibold text-red-100 transition hover:border-red-500 hover:bg-[#2d1b1b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
-              >
-                Delete account
               </button>
             </div>
           </div>
@@ -3411,32 +3380,14 @@
             </div>
             </div>
             <div class="min-w-0">
-              <p id="profileModalName" class="text-base font-semibold text-white leading-tight">Set your name</p>
-              <p id="profileModalSubline" class="text-xs text-gray-400 mt-1 hidden"></p>
+              <p id="profileModalName" class="text-base font-semibold text-white leading-tight">Local app</p>
+              <p id="profileModalSubline" class="text-xs text-gray-400 mt-1">Data stays on this device.</p>
             </div>
           </div>
-          <div class="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:min-w-[200px] sm:items-end">
-            <div id="profileGoogleLoginBtn" class="w-full sm:w-[240px]">
-              <div id="profileGoogleLoginGsi" class="w-full flex justify-center sm:justify-end"></div>
+          <div class="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:min-w-[240px] sm:items-end">
+            <div class="w-full rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-xs text-emerald-100 sm:max-w-[260px]">
+              SimChat now runs as a local-only app. No login, cloud account, or worker cookie is required.
             </div>
-            <button
-              type="button"
-              id="profileLogoutBtn"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-red-700 bg-[#2a1515] px-4 py-2 text-sm font-semibold text-red-100 transition hover:border-red-500 hover:bg-[#311919] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 hidden sm:w-auto"
-              aria-label="Log out"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" class="w-4 h-4">
-                <path
-                  d="M15 17l5-5-5-5M20 12H9M12 21H7a2 2 0 01-2-2V5a2 2 0 012-2h5"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  fill="none"
-                />
-              </svg>
-              <span>Log out</span>
-            </button>
           </div>
         </div>
         <div class="rounded-lg border border-gray-700 bg-[#151515] p-3">
@@ -4467,8 +4418,7 @@
       const appVersionDisplay = document.getElementById('appVersionDisplay');
       const appVersion = 'v11.32';
       const appVersionMeta = document.querySelector('meta[name="app-version"]');
-      const googleClientIdMeta = document.querySelector('meta[name="google-client-id"]');
-      const googleClientId = googleClientIdMeta && typeof googleClientIdMeta.content === 'string' ? googleClientIdMeta.content.trim() : '';
+      const googleClientId = '';
       const chatHeaderChatButtonWrap = document.getElementById('chatHeaderChatButtonWrap');
       const chatHeaderChatButton = document.getElementById('chatHeaderChatButton');
       const editChatTitleBtn = document.getElementById('editChatTitleBtn');
@@ -6110,24 +6060,6 @@
       const profileModalProviderBadge = document.getElementById('profileModalProviderBadge');
       const profileModalAvatar = document.getElementById('profileModalAvatar');
 
-      function resolveCookieWorkerEndpoint() {
-        if (typeof document === 'undefined') {
-          return '';
-        }
-        const metaTag = document.querySelector('meta[name="cookie-worker-endpoint"]');
-        const metaValue = metaTag && typeof metaTag.content === 'string' ? metaTag.content.trim() : '';
-        if (metaValue) {
-          return metaValue.replace(/\/+$/, '');
-        }
-        if (typeof window !== 'undefined' && window.location && window.location.hostname) {
-          const host = window.location.hostname.toLowerCase();
-          if (host === 'localhost' || host === '127.0.0.1') {
-            return 'http://127.0.0.1:8787';
-          }
-        }
-        return '';
-      }
-
       function resolveDatabaseWorkerEndpoint() {
         if (typeof document === 'undefined') {
           return '';
@@ -6161,15 +6093,15 @@
         return metaValue;
       }
 
-      const cookieWorkerEndpoint = resolveCookieWorkerEndpoint();
-      const databaseWorkerEndpoint = resolveDatabaseWorkerEndpoint() || cookieWorkerEndpoint;
+      const databaseWorkerEndpoint = resolveDatabaseWorkerEndpoint();
       const paidWorkerEndpoint = resolvePaidWorkerEndpoint();
       const paidWorkerRegion = resolvePaidWorkerRegion();
       const presetApiEndpoint = databaseWorkerEndpoint ? `${databaseWorkerEndpoint}/presets` : '';
       const chatApiEndpoint = databaseWorkerEndpoint ? `${databaseWorkerEndpoint}/chats` : '';
-      const googleAuthEndpoint = cookieWorkerEndpoint ? `${cookieWorkerEndpoint}/auth/google` : '';
-      const feedbackApiEndpoint = cookieWorkerEndpoint ? `${cookieWorkerEndpoint}/feedback` : '';
-      const deleteAccountEndpoint = cookieWorkerEndpoint ? `${cookieWorkerEndpoint}/account/delete` : '';
+      const cookieWorkerEndpoint = '';
+      const googleAuthEndpoint = '';
+      const feedbackApiEndpoint = '';
+      const deleteAccountEndpoint = '';
       let profileCookieAbortController = null;
       let cachedProfileCookie = '';
       let cachedUserNameSettingValue = '';
@@ -6218,32 +6150,11 @@
       }
 
       function loadStoredProfileCookie() {
-        if (!profileCookieSetting) {
-          if (typeof window === 'undefined') return '';
-          try {
-            const raw = localStorage.getItem('simpletavern.profileCookie');
-            return typeof raw === 'string' ? raw : '';
-          } catch (_) {
-            return '';
-          }
-        }
-        try {
-          return profileCookieSetting.load();
-        } catch (_) {
-          return '';
-        }
+        return '';
       }
 
       function persistProfileCookie(value) {
-        const normalized = normalizeProfileCookie(value);
-        if (!profileCookieSetting) {
-          return normalized;
-        }
-        try {
-          return profileCookieSetting.save(normalized);
-        } catch (_) {
-          return normalized;
-        }
+        return normalizeProfileCookie(value);
       }
 
       function updateSidebarProfileCookie(rawValue) {
@@ -6408,12 +6319,7 @@
       }
 
       async function linkGoogleCredentialWithWorker(credential, { displayName = '', email = '' } = {}) {
-        if (!credential) {
-          throw new Error('Missing Google credential.');
-        }
-        if (!googleAuthEndpoint) {
-          throw new Error('Google auth endpoint is not configured.');
-        }
+        throw new Error('Google account linking has been removed from the local-only app.');
 
         const currentUserId = normalizeProfileCookie(loadStoredProfileCookie());
         const response = await fetch(googleAuthEndpoint, {
@@ -6493,6 +6399,10 @@
       }
 
       function logoutUser({ requestNewCookie = true } = {}) {
+        cachedProfileCookie = '';
+        updateSidebarProfileName(cachedUserNameSettingValue);
+        updateProfileAvatars();
+        return;
         const prevEmail = googleLoginInfo && typeof googleLoginInfo.email === 'string' ? googleLoginInfo.email : '';
         persistGoogleLink(null);
         googleLoginInfo = { name: '', email: '', picture: '' };
@@ -6599,10 +6509,7 @@
       }
 
       async function ensureGoogleInitialized() {
-        if (!googleClientId) {
-          console.warn('Google client ID is not configured.');
-          return null;
-        }
+        return null;
         if (isGoogleInitialized && typeof window !== 'undefined' && window.google && window.google.accounts) {
           return window.google.accounts;
         }
@@ -6621,8 +6528,6 @@
         }
         return googleInitPromise;
       }
-
-      ensureGoogleInitialized().catch(() => {});
 
       async function handleGoogleCredentialResponse(response) {
         if (!response || !response.credential) return;
@@ -6698,6 +6603,7 @@
       updateSidebarProfileCookie();
 
       async function requestProfileCookieFromWorker() {
+        return;
         const storedCookie = normalizeProfileCookie(loadStoredProfileCookie());
         if (storedCookie) {
           setProfileCookieFieldText(storedCookie);
@@ -6770,15 +6676,22 @@
       function updateSidebarProfileName(rawValue) {
         const name = typeof rawValue === 'string' ? rawValue.trim() : '';
         cachedUserNameSettingValue = name;
-        const googleName =
-          googleLoginInfo && typeof googleLoginInfo.name === 'string' ? googleLoginInfo.name.trim() : '';
-        const googleEmail =
-          googleLoginInfo && typeof googleLoginInfo.email === 'string' ? googleLoginInfo.email.trim() : '';
-        const fallbackCookie = normalizeProfileCookie(cachedProfileCookie || loadStoredProfileCookie());
-        const fallback = fallbackCookie ? fallbackCookie.slice(0, 8) : '(...)';
+        const localNamespaceId = getActiveStorageNamespaceId({ create: false });
+        const displayName = name || 'Local app';
         if (profileModalNameDisplay) {
-          profileModalNameDisplay.textContent = googleName || googleEmail || fallback;
+          profileModalNameDisplay.textContent = displayName;
         }
+        if (profileModalSubline) {
+          profileModalSubline.textContent = localNamespaceId
+            ? `Storage namespace: ${localNamespaceId}`
+            : 'Data stays on this device.';
+          profileModalSubline.classList.remove('hidden');
+        }
+        if (sidebarPillNameDisplay) {
+          sidebarPillNameDisplay.textContent = displayName;
+          sidebarPillNameDisplay.classList.toggle('is-placeholder', !name);
+        }
+        updateProfileAvatars();
       }
 
       const composerVisibilityBaseThreshold = 12;
@@ -6983,8 +6896,6 @@
       }
 
       function getActiveStorageNamespaceId({ create = true } = {}) {
-        const profileId = normalizeProfileCookie(loadStoredProfileCookie());
-        if (profileId) return profileId;
         return create ? getLocalStorageNamespaceId() : loadStoredLocalNamespaceId();
       }
 
@@ -10069,7 +9980,7 @@ Chat history:`;
         if (renderCached) {
           const hadCards = renderCachedCardsIfAvailable();
           if (!hadCards && force) {
-            setCardsStatus('No local cards found. Use "Full read from database" to download your cards.');
+            setCardsStatus('No local cards saved yet.');
           }
         }
       }
@@ -10159,12 +10070,7 @@ Chat history:`;
           return presetId;
         }
 
-        const message = 'Card not available locally. Press "Full read from database" to download your cards.';
-        if (isDbReadDisabled) {
-          notifyDbReadDisabled(message);
-        } else {
-          showToast(message);
-        }
+        showToast('Card not available locally.');
         return null;
       }
 
@@ -10910,18 +10816,7 @@ Chat history:`;
           debouncePresetLocalSave();
           return;
         }
-        if (isDbWriteDisabled) {
-          debouncePresetLocalSave();
-          return;
-        }
-        presetDatabaseSaveTimer = setTimeout(() => {
-          presetDatabaseSaveTimer = null;
-          // If the active preset changed before the debounce fired, skip to avoid overwriting another preset.
-          if (targetPresetId !== activePresetDatabaseId) {
-            return;
-          }
-          handlePresetDatabaseUpdate({ silent: true, presetIdOverride: targetPresetId });
-        }, presetDatabaseSaveDebounceMs);
+        debouncePresetLocalSave();
       }
 
       function formatRelativeTimeFromIso(isoString) {
@@ -11723,120 +11618,8 @@ Chat history:`;
         allowSkipWrite = false,
         skipLabel,
       } = {}) {
-        if (!confirmLocalOnlyDisableModal) {
-          showAppErrorMessage(message || 'Unable to open confirmation.', { title: title || 'Confirm' });
-          return false;
-        }
-        if (pendingLocalOnlyDisableResolve) {
-          return false;
-        }
-        const showSkipWriteOption = !!(allowSkipWrite && mode === 'write');
-        pendingLocalOnlyDisableDecision = null;
-        if (confirmLocalOnlyDisableTitle) {
-          confirmLocalOnlyDisableTitle.textContent = title || 'Confirm sync';
-        }
-        if (confirmLocalOnlyDisableMessage) {
-          confirmLocalOnlyDisableMessage.textContent = message || 'Checking database...';
-        }
-        if (confirmLocalOnlyDisableWarning) {
-          confirmLocalOnlyDisableWarning.hidden = !showSkipWriteOption;
-        }
-        renderSyncPreviewDetails([]);
-        setSkipLocalOnlyDisableState({
-          visible: showSkipWriteOption,
-          enabled: false,
-          label: skipLabel || 'Disable without upload',
-        });
-        updateSyncPreviewConfirmState({ enabled: false, label: 'Checking...' });
-        confirmLocalOnlyDisableModal.open();
-
-        try {
-          const preview =
-            mode === 'write' ? await getWriteSyncPreview() : await getReadSyncPreview();
-          if (!preview) {
-            throw new Error('Unable to preview sync.');
-          }
-
-          if (mode === 'write') {
-            const totalCards = preview.cardsTotal || 0;
-            const totalChats = preview.chatsTotal || 0;
-            if (!totalCards && !totalChats) {
-              if (confirmLocalOnlyDisableMessage) {
-                confirmLocalOnlyDisableMessage.textContent = 'No changes detected.';
-              }
-              renderSyncPreviewDetails([]);
-              setSkipLocalOnlyDisableState({
-                visible: showSkipWriteOption,
-                enabled: showSkipWriteOption,
-                label: skipLabel || 'Disable without upload',
-              });
-              updateSyncPreviewConfirmState({ enabled: false, label: 'No changes' });
-              return new Promise((resolve) => {
-                pendingLocalOnlyDisableResolve = resolve;
-              });
-            }
-            if (confirmLocalOnlyDisableMessage) {
-              confirmLocalOnlyDisableMessage.textContent =
-                showSkipWriteOption
-                  ? 'This will upload your local data to the database and overwrite matching entries. You can disable without uploading.'
-                  : 'This will upload your local data to the database and overwrite matching entries.';
-            }
-            renderSyncPreviewDetails([
-              `Cards to upload: ${totalCards} (${preview.cardsNew} new, ${preview.cardsOverwrite} overwrite)`,
-              `Chats to upload: ${totalChats} (${preview.chatsNew} new, ${preview.chatsOverwrite} overwrite)`,
-            ]);
-            setSkipLocalOnlyDisableState({
-              visible: showSkipWriteOption,
-              enabled: showSkipWriteOption,
-              label: skipLabel || 'Disable without upload',
-            });
-            updateSyncPreviewConfirmState({ enabled: true, label: confirmLabel || 'Yes, upload now' });
-            return new Promise((resolve) => {
-              pendingLocalOnlyDisableResolve = resolve;
-            });
-          }
-
-          const totalChanges =
-            preview.cardsToDownload +
-            preview.cardImagesToDownload +
-            preview.cardsToRemove +
-            preview.chatsToDownload +
-            preview.chatsToRemove;
-          if (!totalChanges) {
-            if (confirmLocalOnlyDisableMessage) {
-              confirmLocalOnlyDisableMessage.textContent = 'No changes detected.';
-            }
-            renderSyncPreviewDetails([]);
-            setSkipLocalOnlyDisableState({ visible: false, enabled: false });
-            updateSyncPreviewConfirmState({ enabled: false, label: 'No changes' });
-            return new Promise((resolve) => {
-              pendingLocalOnlyDisableResolve = resolve;
-            });
-          }
-          if (confirmLocalOnlyDisableMessage) {
-            confirmLocalOnlyDisableMessage.textContent =
-              'This will download data from the database and may remove local items missing on the server.';
-          }
-          renderSyncPreviewDetails([
-            `Cards to download: ${preview.cardsToDownload}`,
-            `Card images to download: ${preview.cardImagesToDownload}`,
-            `Cards removed locally: ${preview.cardsToRemove}`,
-            `Chats to download: ${preview.chatsToDownload}`,
-            `Chats removed locally: ${preview.chatsToRemove}`,
-          ]);
-          setSkipLocalOnlyDisableState({ visible: false, enabled: false });
-          updateSyncPreviewConfirmState({ enabled: true, label: confirmLabel || 'Yes, download now' });
-          return new Promise((resolve) => {
-            pendingLocalOnlyDisableResolve = resolve;
-          });
-        } catch (err) {
-          pendingLocalOnlyDisableResolve = null;
-          pendingLocalOnlyDisableDecision = null;
-          setSkipLocalOnlyDisableState({ visible: false, enabled: false });
-          confirmLocalOnlyDisableModal.close();
-          showAppErrorMessage(err?.message || 'Unable to preview sync.', { title: 'Preview failed' });
-          return false;
-        }
+        showAppToastMessage('Remote sync has been removed. Cards and chats are stored locally.');
+        return false;
       }
 
       function respondToLocalOnlyDisableConfirmation(decision) {
@@ -12181,6 +11964,8 @@ Chat history:`;
       }
 
       async function uploadLocalDataToDatabase() {
+        showAppToastMessage('Remote sync has been removed. Cards and chats are stored locally.');
+        return;
         if (isLocalOnlySyncInProgress) return;
         const presetEndpoint = ensureEndpointAvailable(
           presetApiEndpoint,
@@ -12425,33 +12210,7 @@ Chat history:`;
       }
 
       async function handleLocalOnlyToggleChange() {
-        if (!localOnlyModeToggleSettings) return;
-        if (isLocalOnlySyncInProgress) {
-          setLocalOnlyMode(true, { persist: false, updateUI: true });
-          return;
-        }
-        const nextEnabled = !!localOnlyModeToggleSettings.checked;
-        if (nextEnabled) {
-          setLocalOnlyMode(true);
-          return;
-        }
-        const decision = await requestSyncPreviewConfirmation({
-          mode: 'write',
-          title: 'Disable local only mode?',
-          message: 'Checking database changes...',
-          confirmLabel: 'Yes, upload and disable',
-          allowSkipWrite: true,
-          skipLabel: 'Disable without upload',
-        });
-        if (decision !== 'confirm') {
-          if (decision === 'skip') {
-            setLocalOnlyMode(false);
-            return;
-          }
-          setLocalOnlyMode(true, { persist: false, updateUI: true });
-          return;
-        }
-        await uploadLocalDataToDatabase();
+        setLocalOnlyMode(true);
       }
 
       function collectPresetBlocksSnapshot() {
@@ -13168,8 +12927,7 @@ Chat history:`;
       }
 
       function buildPresetDatabaseRequestContext(options = {}) {
-        const { silent = false, requireRemote = false } = options;
-        const endpoint = typeof presetApiEndpoint === 'string' ? presetApiEndpoint.trim() : '';
+        const { silent = false } = options;
         updatePresetEstimatedTokens();
         const estimatedRaw = presetEstimatedTokensInput && typeof presetEstimatedTokensInput.value === 'string'
           ? Number.parseInt(presetEstimatedTokensInput.value, 10)
@@ -13191,24 +12949,11 @@ Chat history:`;
           }
           return null;
         }
-        const userId = ensureUserId(null);
         const payload = buildPresetExportPayload(snapshot, presetName);
         if (estimatedTokenCount !== null) {
           payload.estimatedTokenCount = estimatedTokenCount;
         }
-        if (requireRemote && !endpoint) {
-          if (!silent) {
-            showAppToastMessage('Preset storage endpoint is not configured.');
-          }
-          return null;
-        }
-        if (requireRemote && !userId) {
-          if (!silent) {
-            showAppToastMessage('No user ID is available. Request a cookie first.');
-          }
-          return null;
-        }
-        return { endpoint, presetName, snapshot, userId, payload };
+        return { presetName, snapshot, payload };
       }
 
       async function savePresetLocally(
@@ -13261,97 +13006,10 @@ Chat history:`;
         return { presetId, presetData: nextEntry };
       }
 
-      async function createPresetInDatabase(
-        context,
-        { silent = false, avatarSourcePresetId = null, refreshOptions = null } = {},
-      ) {
-        if (isDbWriteDisabled) {
-          if (!silent) {
-            showAppToastMessage('Local only mode is enabled.');
-          }
-          return null;
-        }
-        const { endpoint, presetName, snapshot, userId, payload } = context;
-        try {
-          const response = await requestJson(endpoint, {
-            method: 'POST',
-            body: {
-              presetName,
-              userId,
-              data: payload,
-              avatarSourcePresetId:
-                avatarSourcePresetId && typeof avatarSourcePresetId === 'string'
-                  ? avatarSourcePresetId
-                  : undefined,
-            },
-            defaultError: 'Unable to save preset to database.',
-          });
-          const presetId = response && typeof response.preset_id === 'string' ? response.preset_id : null;
-          const pendingAvatar = pendingPresetAvatarDataUrl;
-          setActivePresetDatabaseId(presetId);
-          if (presetId) {
-            if (pendingAvatar) {
-              pendingPresetAvatarDataUrl = null;
-              try {
-                await uploadPresetAvatarDataUrl(pendingAvatar, { presetIdOverride: presetId });
-              } catch (_) {
-                // Ignore avatar upload errors; handled in helper.
-              }
-            }
-            try {
-              const normalized = normalizePresetPayload(payload);
-              localLibrary.setPresetDetail(presetId, normalized);
-            } catch (_) {
-              // Ignore local detail persistence failures.
-            }
-            const avatarUrlOverride = (() => {
-              const url = typeof activePresetAvatarUrl === 'string' ? activePresetAvatarUrl.trim() : '';
-              return url ? url : null;
-            })();
-            const createdEntry = {
-              ...(response && typeof response === 'object' ? response : {}),
-              preset_id: presetId,
-              preset_name: presetName,
-              avatarUrlOverride: avatarUrlOverride,
-            };
-            cachedDatabasePresets = Array.isArray(cachedDatabasePresets)
-              ? ensureBuiltInSummarizePreset([createdEntry, ...cachedDatabasePresets.filter((entry) => entry && entry.preset_id !== presetId)])
-              : ensureBuiltInSummarizePreset([createdEntry]);
-            persistPresetsIndexToLocalLibrary();
-          }
-          persistPresetSnapshot(snapshot, presetName);
-          persistedPresetBlocks = snapshot;
-          persistedPresetName = presetName;
-          try {
-            await handlePresetDatabaseLoad(refreshOptions || {});
-          } catch (loadErr) {
-            console.error('Failed to refresh preset list after save', loadErr);
-          }
-          return { presetId, presetData: response || null };
-        } catch (err) {
-          console.error('Failed to save preset to database', err);
-          if (!silent) {
-            showAppToastMessage(err?.message || 'Unable to save preset to database.');
-          }
-          return null;
-        }
-      }
-
       async function handlePresetDatabaseClone(options = {}) {
-        const { refreshOptions = null } = options || {};
         const context = buildPresetDatabaseRequestContext();
         if (!context) return null;
-        if (isDbWriteDisabled || !context.endpoint || !context.userId) {
-          return savePresetLocally(context, { preserveAvatar: true, forceNewId: true });
-        }
-        const sourcePresetId = activePresetDatabaseId;
-        const result = await createPresetInDatabase(context, {
-          avatarSourcePresetId: sourcePresetId,
-          refreshOptions,
-        });
-        if (!result) return null;
-        const { presetId, presetData } = result;
-        return { presetId, presetData };
+        return savePresetLocally(context, { preserveAvatar: true, forceNewId: true });
       }
 
       async function handlePresetDatabaseUpdate(options = {}) {
@@ -13367,49 +13025,12 @@ Chat history:`;
         }
         const context = buildPresetDatabaseRequestContext({ silent });
         if (!context) return;
-        if (isDbWriteDisabled || !context.endpoint || !context.userId) {
+        presetDatabaseSaveInProgress = true;
+        try {
           await savePresetLocally(context, {
             presetIdOverride: presetId,
             preserveAvatar: true,
           });
-          return;
-        }
-        presetDatabaseSaveInProgress = true;
-        try {
-          if (!presetId) {
-            await createPresetInDatabase(context, { silent });
-            return;
-          }
-          const { endpoint, presetName, snapshot, userId, payload } = context;
-          const targetUrl = `${endpoint}/${encodeURIComponent(presetId)}?userId=${encodeURIComponent(userId)}`;
-          try {
-            await requestJson(targetUrl, {
-              method: 'PUT',
-              body: {
-                presetName,
-                userId,
-                data: payload,
-              },
-              defaultError: 'Unable to update preset in database.',
-            });
-            setActivePresetDatabaseId(presetId);
-            persistPresetSnapshot(snapshot, presetName);
-            persistedPresetBlocks = snapshot;
-            persistedPresetName = presetName;
-            try {
-              const normalized = normalizePresetPayload(payload);
-              localLibrary.setPresetDetail(presetId, normalized);
-            } catch (_) {
-              // Ignore local detail persistence failures.
-            }
-            updateCachedPresetLocalMetadata(presetId, { presetName, avatarUrl: activePresetAvatarUrl });
-            persistPresetsIndexToLocalLibrary();
-          } catch (err) {
-            console.error('Failed to update preset in database', err);
-            if (!silent) {
-              showAppToastMessage(err?.message || 'Unable to update preset in database.');
-            }
-          }
         } finally {
           presetDatabaseSaveInProgress = false;
         }
@@ -13450,88 +13071,25 @@ Chat history:`;
             return null;
           }
         }
-        if (isDbWriteDisabled) {
-          notifyDbWriteDisabled('Local only mode is enabled: not uploading image.');
-          try {
-            const localUrl = await blobToDataUrl(uploadFile);
-            if (localUrl) {
-              try {
-                localLibrary.setPresetAvatarDataUrl(presetId, localUrl);
-              } catch (_) {}
-              const userId = ensureUserId(() => {});
-              updateCachedPresetAvatar(presetId, { avatarUrl: localUrl, userId });
-              setPresetAvatar(localUrl, { presetIdOverride: presetId });
-              if (presetId && presetId === activeCardModalPresetId) {
-                activeCardModalAvatarUrl = localUrl || cardsPlaceholderImage;
-                if (cardActionImage) {
-                  cardActionImage.src = activeCardModalAvatarUrl;
-                }
-              }
-            }
-          } catch (_) {}
-          return null;
-        }
-        const endpoint = ensureEndpointAvailable(
-          presetApiEndpoint,
-          'Preset storage endpoint is not configured.',
-          (message) => showAppToastMessage(message),
-        );
-        if (!endpoint) return null;
-        const userId = ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-        if (!userId) return null;
-        const contentType =
-          uploadFile && typeof uploadFile.type === 'string' && uploadFile.type.trim()
-            ? uploadFile.type
-            : 'application/octet-stream';
-        const targetUrl = `${endpoint}/${encodeURIComponent(presetId)}/avatar?userId=${encodeURIComponent(userId)}`;
         try {
-          const response = await fetch(targetUrl, {
-            method: 'PUT',
-            headers: {
-              'content-type': contentType,
-            },
-            body: uploadFile,
-          });
-          if (!response.ok) {
-            let detail = 'Unable to upload card image.';
-            try {
-              const payload = await response.json();
-              if (payload && typeof payload.error === 'string') {
-                detail = payload.error;
-              }
-            } catch (_) {
-              // Ignore parse failures.
-            }
-            throw new Error(detail);
+          const localUrl = await blobToDataUrl(uploadFile);
+          if (!localUrl) {
+            throw new Error('Unable to read image.');
           }
-          const payload = await response.json();
-          const avatarKey =
-            payload && typeof payload.avatar_r2_key === 'string' ? payload.avatar_r2_key : null;
-          let displayAvatarUrl = null;
           try {
-            const localUrl = await blobToDataUrl(uploadFile);
-            if (localUrl) {
-              displayAvatarUrl = localUrl;
-              updateCachedPresetAvatar(presetId, { avatarUrl: localUrl, avatarKey, userId });
-              try {
-                localLibrary.setPresetAvatarDataUrl(presetId, localUrl);
-              } catch (_) {}
-            } else {
-              updateCachedPresetAvatar(presetId, { avatarUrl: null, avatarKey, userId });
-            }
-          } catch (_) {
-            updateCachedPresetAvatar(presetId, { avatarUrl: null, avatarKey, userId });
-          }
-          setPresetAvatar(displayAvatarUrl, { presetIdOverride: presetId });
+            localLibrary.setPresetAvatarDataUrl(presetId, localUrl);
+          } catch (_) {}
+          updateCachedPresetAvatar(presetId, { avatarUrl: localUrl, userId: getActiveStorageNamespaceId() });
+          setPresetAvatar(localUrl, { presetIdOverride: presetId });
           if (presetId && presetId === activeCardModalPresetId) {
-            activeCardModalAvatarUrl = displayAvatarUrl || cardsPlaceholderImage;
+            activeCardModalAvatarUrl = localUrl || cardsPlaceholderImage;
             if (cardActionImage) {
               cardActionImage.src = activeCardModalAvatarUrl;
             }
           }
           const displayName = getActivePresetNameForDisplay() || 'Card';
           showToast(`Updated image for ${displayName}`);
-          return avatarKey;
+          return { avatarUrl: localUrl, avatarKey: null };
         } catch (err) {
           console.error('Failed to upload card image', err);
           showAppToastMessage(err?.message || 'Unable to upload card image.');
@@ -13566,13 +13124,11 @@ Chat history:`;
         if (!presetId) {
           return null;
         }
-        if (isDbWriteDisabled) {
-          notifyDbWriteDisabled('Local only mode is enabled: not uploading image.');
+        try {
           try {
             localLibrary.setPresetAvatarDataUrl(presetId, dataUrl);
           } catch (_) {}
-          const userId = ensureUserId(() => {});
-          updateCachedPresetAvatar(presetId, { avatarUrl: dataUrl, userId });
+          updateCachedPresetAvatar(presetId, { avatarUrl: dataUrl, userId: getActiveStorageNamespaceId() });
           setPresetAvatar(dataUrl);
           const displayName = getActivePresetNameForDisplay() || 'Card';
           const message = typeof successMessage === 'string' && successMessage.trim()
@@ -13580,50 +13136,6 @@ Chat history:`;
             : `Updated image for ${displayName}`;
           showToast(message);
           return { avatarUrl: dataUrl, avatarKey: null };
-        }
-        const endpoint = ensureEndpointAvailable(
-          presetApiEndpoint,
-          'Preset storage endpoint is not configured.',
-          (message) => showAppToastMessage(message),
-        );
-        if (!endpoint) return null;
-        const userId = ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-        if (!userId) return null;
-        const targetUrl = `${endpoint}/${encodeURIComponent(presetId)}/avatar?userId=${encodeURIComponent(userId)}`;
-        try {
-          const response = await fetch(targetUrl, {
-            method: 'PUT',
-            headers: {
-              'content-type': 'image/png',
-            },
-            body: blob,
-          });
-          if (!response.ok) {
-            let detail = 'Unable to upload card image.';
-            try {
-              const payload = await response.json();
-              if (payload && typeof payload.error === 'string') {
-                detail = payload.error;
-              }
-            } catch (_) {
-              // Ignore parse failures.
-            }
-            throw new Error(detail);
-          }
-          const payload = await response.json();
-          const avatarKey =
-            payload && typeof payload.avatar_r2_key === 'string' ? payload.avatar_r2_key : null;
-          updateCachedPresetAvatar(presetId, { avatarUrl: dataUrl, avatarKey, userId });
-          setPresetAvatar(dataUrl);
-          try {
-            localLibrary.setPresetAvatarDataUrl(presetId, dataUrl);
-          } catch (_) {}
-          const displayName = getActivePresetNameForDisplay() || 'Card';
-          const message = typeof successMessage === 'string' && successMessage.trim()
-            ? successMessage.trim()
-            : `Updated image for ${displayName}`;
-          showToast(message);
-          return { avatarUrl: dataUrl, avatarKey };
         } catch (err) {
           console.error('Failed to upload card image from data', err);
           return null;
@@ -13686,25 +13198,17 @@ Chat history:`;
       }
 
       async function handlePresetDatabaseLoad(options = {}) {
-        const {
-          showLoadingOverlay = true,
-          loadingTitle = 'Loading cards...',
-          loadingSubtitle = 'Fetching your saved cards.',
-          forceRemote = false,
-        } = options || {};
         const hydrated = hydratePresetsIndexFromLocalLibrary();
         renderCachedCardsIfAvailable();
         updateActivePresetAvatarFromCache({ bustCache: false });
-        if (!hydrated && forceRemote) {
-          setCardsStatus('Cards are local-only now. Use "Full read from database" to refresh from the server.');
-        } else if (!hydrated && isDbReadDisabled) {
-          setCardsStatus('Local only mode is enabled.');
-        } else if (!hydrated) {
-          setCardsStatus('No local cards found. Use "Full read from database" to download your cards.');
+        if (!hydrated) {
+          setCardsStatus('No local cards saved yet.');
         }
       }
 
       async function runFullDatabaseSync({ mode = 'manual', reason = '', notifyOnNoChanges = true, signal } = {}) {
+        showAppToastMessage('Remote sync has been removed. Cards and chats are stored locally.');
+        return;
         const normalizedMode = typeof mode === 'string' && mode.trim() ? mode.trim() : 'manual';
         const resolvedReason = typeof reason === 'string' && reason.trim() ? reason.trim() : normalizedMode;
         const showOverlay = normalizedMode !== 'auto';
@@ -14070,6 +13574,7 @@ Chat history:`;
       }
 
       async function runAutomaticDatabaseSyncCheck({ reason = 'startup', force = false } = {}) {
+        return;
         if (isLocalOnlyMode) return;
         if (typeof navigator !== 'undefined' && navigator && navigator.onLine === false) return;
         if (!presetApiEndpoint || !chatApiEndpoint) return;
@@ -14388,7 +13893,7 @@ Chat history:`;
       }
 
       function buildChatDatabasePayload() {
-        const entries = normalizeChatEntriesForDatabase(chatHistory);
+        const entries = normalizeChatEntriesForLocal(chatHistory);
         const presetId = typeof activePresetDatabaseId === 'string' ? activePresetDatabaseId.trim() : '';
         const existingTitle = (() => {
           const inMemory =
@@ -14507,121 +14012,23 @@ Chat history:`;
           }
           return;
         }
-        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
-        const userId = ensureUserId(null);
-        if (isDbWriteDisabled || !endpoint || !userId) {
-          const localChatId =
-            typeof currentChatId === 'string' && currentChatId.trim()
-              ? currentChatId.trim()
-              : generateLocalRecordId('chat');
-          persistLocalChatRecord({
-            chatId: localChatId,
-            presetId,
-            title: payload.title,
-            payloadData: payload.data,
-            updateRoute:
-              typeof window !== 'undefined'
-              && window.location
-              && typeof window.location.hash === 'string'
-              && window.location.hash.trim() === hashRouteChat,
-          });
-          if (showAlerts) {
-            showAppToastMessage('Chat saved locally.');
-          }
-          return;
-        }
-        try {
-          const previousChatId =
-            typeof currentChatId === 'string' && currentChatId.trim().length ? currentChatId.trim() : '';
-          const body = await requestJson(endpoint, {
-            method: 'POST',
-            body: {
-              userId,
-              chatId: currentChatId || undefined,
-              title: payload.title,
-              data: payload.data,
-              presetId,
-            },
-            defaultError: 'Unable to save chat to database.',
-          });
-            if (body && typeof body.chat_id === 'string' && body.chat_id.trim().length) {
-              currentChatId = body.chat_id.trim();
-            }
-            if (body && typeof body.title === 'string' && body.title.trim().length) {
-              currentChatTitle = body.title.trim();
-            }
-            activeChatPresetId = presetId;
-            rememberCardChatActivity(userId, presetId, Date.now());
-            const normalizedNewChatId =
-              typeof currentChatId === 'string' && currentChatId.trim().length ? currentChatId.trim() : '';
-            const isNewChat = !previousChatId && normalizedNewChatId;
-            if (isNewChat) {
-              const normalizedPresetId =
-                typeof presetId === 'string' && presetId.trim().length ? presetId.trim() : '';
-              const currentLocalCount = getLocalChatCountForPreset(normalizedPresetId);
-              const updatedCount = Math.max(0, currentLocalCount || 0) + 1;
-              updateCardChatBadgeCount(normalizedPresetId, updatedCount);
-            }
-            invalidateCardChatListCacheEntry(userId, presetId);
-            if (
-              typeof window !== 'undefined'
-              && window.location
-              && typeof window.location.hash === 'string'
-              && window.location.hash.trim() === hashRouteChat
-              && currentChatId
-              && currentChatId !== previousChatId
-            ) {
-              syncRouteHash(buildChatHash(currentChatId), { replace: true });
-            }
-            try {
-              const normalizedChatId =
-                typeof currentChatId === 'string' && currentChatId.trim().length ? currentChatId.trim() : '';
-              if (normalizedChatId) {
-                localLibrary.setChatDetail(normalizedChatId, payload.data);
-                const nowIso = new Date().toISOString();
-                const entry = {
-                  chat_id: normalizedChatId,
-                  preset_id: presetId,
-                  title: currentChatTitle || payload.title || normalizedChatId,
-                  created_at:
-                    body && typeof body.created_at === 'string'
-                      ? body.created_at
-                      : nowIso,
-                  updated_at:
-                    body && typeof body.updated_at === 'string'
-                      ? body.updated_at
-                      : nowIso,
-                  last_used:
-                    body && typeof body.last_used === 'string'
-                      ? body.last_used
-                      : nowIso,
-                  message_count: Array.isArray(payload?.data?.entries) ? payload.data.entries.length : null,
-                  last_token_count:
-                    payload && payload.data && Object.prototype.hasOwnProperty.call(payload.data, 'lastTokenCount')
-                      ? payload.data.lastTokenCount
-                      : null,
-                };
-                const existing = Array.isArray(cachedDatabaseChats) ? cachedDatabaseChats : [];
-                cachedDatabaseChats = [entry].concat(
-                  existing.filter((chat) => {
-                    const id = typeof chat?.chat_id === 'string' ? chat.chat_id.trim() : '';
-                    return !id || id !== normalizedChatId;
-                  }),
-                );
-                persistChatsIndexToLocalLibrary();
-                updateChatHeaderChatButton();
-              }
-            } catch (_) {
-              // Ignore local library persistence failures.
-            }
-            if (showAlerts) {
-              showAppToastMessage('Chat saved to database.');
-            }
-        } catch (err) {
-          console.error('Failed to save chat to database', err);
-          if (showAlerts) {
-            showAppToastMessage(err?.message || 'Unable to save chat to database.');
-          }
+        const localChatId =
+          typeof currentChatId === 'string' && currentChatId.trim()
+            ? currentChatId.trim()
+            : generateLocalRecordId('chat');
+        persistLocalChatRecord({
+          chatId: localChatId,
+          presetId,
+          title: payload.title,
+          payloadData: payload.data,
+          updateRoute:
+            typeof window !== 'undefined'
+            && window.location
+            && typeof window.location.hash === 'string'
+            && window.location.hash.trim() === hashRouteChat,
+        });
+        if (showAlerts) {
+          showAppToastMessage('Chat saved locally.');
         }
       }
 
@@ -14649,7 +14056,7 @@ Chat history:`;
           directionKey === 'up'
             ? history.slice(0, targetIndex + 1)
             : history.slice(targetIndex);
-        const entries = normalizeChatEntriesForDatabase(slice);
+        const entries = normalizeChatEntriesForLocal(slice);
         if (!entries.length) {
           showAppToastMessage('Unable to fork: no messages to save.');
           return;
@@ -14657,141 +14064,33 @@ Chat history:`;
 
         const forkTitle = `${generateChatTitle(presetId, '', { excludeChatId: null })} (forked ${directionKey})`;
         const payloadData = { entries };
-        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
-        const userId = ensureUserId(null);
-        if (isDbWriteDisabled || !endpoint || !userId) {
-          const localChatId = generateLocalRecordId('chat');
-          persistLocalChatRecord({
-            chatId: localChatId,
-            presetId,
-            title: forkTitle,
-            payloadData,
-          });
-          return localChatId;
-        }
-
-        try {
-          const body = await requestJson(endpoint, {
-            method: 'POST',
-            body: {
-              userId,
-              chatId: undefined,
-              title: forkTitle,
-              data: payloadData,
-              presetId,
-            },
-            defaultError: 'Unable to fork chat.',
-          });
-          const newChatId = body && typeof body.chat_id === 'string' ? body.chat_id.trim() : '';
-          if (newChatId) {
-            try {
-              localLibrary.setChatDetail(newChatId, payloadData);
-              const nowIso = new Date().toISOString();
-              const entry = {
-                chat_id: newChatId,
-                preset_id: presetId,
-                title: forkTitle,
-                created_at: body && typeof body.created_at === 'string' ? body.created_at : nowIso,
-                updated_at: body && typeof body.updated_at === 'string' ? body.updated_at : nowIso,
-                last_used: body && typeof body.last_used === 'string' ? body.last_used : nowIso,
-                message_count: entries.length,
-                last_token_count:
-                  payloadData && Object.prototype.hasOwnProperty.call(payloadData, 'lastTokenCount')
-                    ? payloadData.lastTokenCount
-                    : null,
-              };
-              const existing = Array.isArray(cachedDatabaseChats) ? cachedDatabaseChats : [];
-              cachedDatabaseChats = [entry].concat(
-                existing.filter((chat) => {
-                  const id = typeof chat?.chat_id === 'string' ? chat.chat_id.trim() : '';
-                  return !id || id !== newChatId;
-                }),
-              );
-              persistChatsIndexToLocalLibrary();
-            } catch (_) {}
-          }
-          rememberCardChatActivity(userId, presetId, Date.now());
-          invalidateCardChatListCacheEntry(userId, presetId);
-          return newChatId || null;
-        } catch (err) {
-          console.error('Failed to fork chat', err);
-          showAppToastMessage(err?.message || 'Unable to fork chat.');
-          return null;
-        }
+        const localChatId = generateLocalRecordId('chat');
+        persistLocalChatRecord({
+          chatId: localChatId,
+          presetId,
+          title: forkTitle,
+          payloadData,
+        });
+        return localChatId;
       }
 
       async function forkChatWithSummaryHistory(newHistory) {
         const presetId = typeof activePresetDatabaseId === 'string' ? activePresetDatabaseId.trim() : '';
-        const entries = normalizeChatEntriesForDatabase(newHistory);
+        const entries = normalizeChatEntriesForLocal(newHistory);
         if (!entries.length) {
           showAppToastMessage('Unable to fork chat: no messages to save.');
           return null;
         }
         const forkTitle = `${generateChatTitle(presetId, '', { excludeChatId: null })} (summary)`;
         const payloadData = { entries };
-        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
-        const userId = ensureUserId(null);
-        if (isDbWriteDisabled || !endpoint || !userId) {
-          const localChatId = generateLocalRecordId('chat');
-          persistLocalChatRecord({
-            chatId: localChatId,
-            presetId,
-            title: forkTitle,
-            payloadData,
-          });
-          return localChatId;
-        }
-
-        try {
-          const body = await requestJson(endpoint, {
-            method: 'POST',
-            body: {
-              userId,
-              chatId: undefined,
-              title: forkTitle,
-              data: payloadData,
-              presetId: presetId || undefined,
-            },
-            defaultError: 'Unable to create summary version of chat.',
-          });
-          const newChatId = body && typeof body.chat_id === 'string' ? body.chat_id.trim() : '';
-          if (newChatId) {
-            try {
-              localLibrary.setChatDetail(newChatId, payloadData);
-              const nowIso = new Date().toISOString();
-              const entry = {
-                chat_id: newChatId,
-                preset_id: presetId || null,
-                title: forkTitle,
-                created_at: body && typeof body.created_at === 'string' ? body.created_at : nowIso,
-                updated_at: body && typeof body.updated_at === 'string' ? body.updated_at : nowIso,
-                last_used: body && typeof body.last_used === 'string' ? body.last_used : nowIso,
-                message_count: Array.isArray(payloadData?.entries) ? payloadData.entries.length : null,
-                last_token_count:
-                  payloadData && Object.prototype.hasOwnProperty.call(payloadData, 'lastTokenCount')
-                    ? payloadData.lastTokenCount
-                    : null,
-              };
-              const existing = Array.isArray(cachedDatabaseChats) ? cachedDatabaseChats : [];
-              cachedDatabaseChats = [entry].concat(
-                existing.filter((chat) => {
-                  const id = typeof chat?.chat_id === 'string' ? chat.chat_id.trim() : '';
-                  return !id || id !== newChatId;
-                }),
-              );
-              persistChatsIndexToLocalLibrary();
-            } catch (_) {}
-          }
-          if (presetId) {
-            rememberCardChatActivity(userId, presetId, Date.now());
-            invalidateCardChatListCacheEntry(userId, presetId);
-          }
-          return newChatId || null;
-        } catch (err) {
-          console.error('Failed to fork chat with summary', err);
-          showAppToastMessage(err?.message || 'Unable to fork chat with summary.');
-          return null;
-        }
+        const localChatId = generateLocalRecordId('chat');
+        persistLocalChatRecord({
+          chatId: localChatId,
+          presetId,
+          title: forkTitle,
+          payloadData,
+        });
+        return localChatId;
       }
 
       function findCachedPresetName(presetId) {
@@ -14842,7 +14141,6 @@ Chat history:`;
       }
 
       async function handlePresetDatabaseDelete(presetId) {
-        const endpoint = typeof presetApiEndpoint === 'string' ? presetApiEndpoint.trim() : '';
         const normalizedPresetId = typeof presetId === 'string' ? presetId.trim() : '';
         if (isBuiltInSummarizePresetId(normalizedPresetId)) {
           showAppToastMessage('The summarize preset is built in and cannot be deleted.');
@@ -14856,26 +14154,9 @@ Chat history:`;
           (typeof pendingDeletePresetName === 'string' && pendingDeletePresetName.trim())
             ? pendingDeletePresetName.trim()
             : findCachedPresetName(normalizedPresetId) || 'Card';
-        const userId = ensureUserId(null);
-        if (userId) {
-          cardsLoadedUserId = userId;
-        }
-        if (isDbWriteDisabled || !endpoint || !userId) {
-          optimisticallyRemovePresetFromCache(normalizedPresetId);
-          showToast(`Deleted "${presetName}"`);
-          return;
-        }
-        try {
-          await requestJson(
-            `${endpoint}/${encodeURIComponent(normalizedPresetId)}?userId=${encodeURIComponent(userId)}`,
-            { method: 'DELETE', defaultError: 'Unable to delete preset.' },
-          );
-          optimisticallyRemovePresetFromCache(normalizedPresetId);
-          showToast(`Deleted "${presetName}"`);
-        } catch (err) {
-          console.error('Failed to delete preset from database', err);
-          showAppToastMessage(err?.message || 'Unable to delete preset.');
-        }
+        cardsLoadedUserId = getActiveStorageNamespaceId({ create: false });
+        optimisticallyRemovePresetFromCache(normalizedPresetId);
+        showToast(`Deleted "${presetName}"`);
       }
 
       function openPresetDeleteConfirmation(options = {}) {
@@ -14927,14 +14208,6 @@ Chat history:`;
         }
         if (!targetId) {
           showAppToastMessage('No saved card selected to delete.');
-          return;
-        }
-        if (isDbWriteDisabled) {
-          showAppToastMessage('Local only mode is enabled.');
-          if (confirmDeletePresetModal) {
-            confirmDeletePresetModal.close();
-          }
-          resetPendingPresetDeletion();
           return;
         }
         if (confirmDeletePresetModal) {
@@ -15529,19 +14802,12 @@ Write with love, write with audacity, and take initiative to drive the interacti
 	              }
 	              return;
 	            }
-	            if (pendingContext && pendingContext.endpoint) {
-	              context.endpoint = pendingContext.endpoint;
-	            }
-	            if (pendingContext && pendingContext.userId) {
-	              context.userId = pendingContext.userId;
-	            }
-	            const userId = context.userId;
 	            const provisionalId = provisionalCardId;
 	            const importPromise = (async () => {
-	              const result = await createPresetInDatabase(context, { refreshOptions: { force: true } });
+	              const result = await savePresetLocally(context, { preserveAvatar: true });
 	              const createdPresetId =
 	                result && typeof result.presetId === 'string' ? result.presetId.trim() : activePresetDatabaseId;
-	              return { presetId: createdPresetId || null, presetData: result?.presetData || null, userId };
+	              return { presetId: createdPresetId || null, presetData: result?.presetData || null, userId: null };
 	            })();
 	            if (provisionalId) {
 	              pendingImportPromises.set(provisionalId, importPromise);
@@ -15632,7 +14898,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
 
       function ensureUserId(onMissing) {
-        const userId = normalizeProfileCookie(loadStoredProfileCookie());
+        const userId = getActiveStorageNamespaceId({ create: true });
         if (!userId && typeof onMissing === 'function') {
           onMissing();
         }
@@ -17599,23 +16865,9 @@ Write with love, write with audacity, and take initiative to drive the interacti
           debugModal.close();
           feedbackModal.close();
           tokenStatsModal.close();
-          if (isProfileCookieEditing) {
-            finishProfileCookieEdit({ save: true });
-          }
           profileModal.open();
-          setTimeout(() => {
-            ensureGoogleInitialized()
-              .then((accounts) => {
-                if (accounts && accounts.id) {
-                  renderGoogleLoginButton(accounts);
-                }
-              })
-              .catch(() => {});
-          }, 50);
         });
       }
-
-      // Google login button is rendered by Google Identity Services.
 
       if (profileLogoutBtn) {
         profileLogoutBtn.addEventListener('click', async function(e) {
@@ -18170,15 +17422,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         deserialize: (value) => value,
         shouldRemove: (value) => !value,
       });
-      profileCookieSetting = createStoredSetting({
-        key: profileCookieStorageKey,
-        defaultValue: '',
-        normalize: (value) => normalizeProfileCookie(value),
-        serialize: (value) => value,
-        deserialize: (value) => value,
-        shouldRemove: (value) => !value,
-      });
-
       const localOnlyModePreferenceSetting = createStoredSetting({
         key: localOnlyModePreferenceKey,
         defaultValue: false,
@@ -18207,18 +17450,16 @@ Write with love, write with audacity, and take initiative to drive the interacti
         serialize: (value) => (value ? 'true' : 'false'),
         deserialize: (value) => value === 'true',
       });
-      isLocalOnlyMode = localOnlyModePreferenceSetting.load();
-      isDbReadDisabled = isLocalOnlyMode;
-      isDbWriteDisabled = isLocalOnlyMode;
+      isLocalOnlyMode = true;
+      isDbReadDisabled = true;
+      isDbWriteDisabled = true;
       isPaidModeEnabled = paidModePreferenceSetting.load();
       let isForceUseApiKeyEnabled = forceUseApiKeyPreferenceSetting.load();
       let isAnthropicProxyEnabled = anthropicProxyEnabledPreferenceSetting.load();
 
       updateSidebarProfileName(userNameSetting.load());
-      requestProfileCookieFromWorker().finally(() => {
-        applyFirstVisitDefaultRoute();
-        handleRouteChange();
-      });
+      applyFirstVisitDefaultRoute();
+      handleRouteChange();
 
       const cachingPreferenceSetting = createStoredSetting({
         key: cachingPreferenceKey,
@@ -18286,30 +17527,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         deserialize: (value) => Number(value),
       });
 
-      googleLinkSetting = createStoredSetting({
-        key: googleLinkStorageKey,
-        defaultValue: null,
-        normalize: (value) => normalizeGoogleLink(value),
-        serialize: (value) => JSON.stringify(value),
-        deserialize: (value) => {
-          try {
-            return JSON.parse(value);
-          } catch (_) {
-            return null;
-          }
-        },
-        shouldRemove: (value) => !value || (typeof value === 'object' && !value.userId && !value.name && !value.email),
-      });
-      const storedGoogleLink = loadPersistedGoogleLink();
-      if (storedGoogleLink) {
-        googleLoginInfo = {
-          name: storedGoogleLink.name || '',
-          email: storedGoogleLink.email || '',
-          picture: storedGoogleLink.picture || '',
-        };
-        updateGoogleLoginStatusDisplay(googleLoginInfo);
-        updateSidebarProfileCookie(cachedProfileCookie || normalizeProfileCookie(loadStoredProfileCookie()));
-      }
       setTokenStatsWindow(tokenStatsWindowSetting.load(), { persist: false });
 
       function bindPersistentTextInput(
@@ -18613,15 +17830,15 @@ Write with love, write with audacity, and take initiative to drive the interacti
         showToast(message);
       }
 
-      function notifyDbReadDisabled(message = 'Local only mode is enabled.', options) {
+      function notifyDbReadDisabled(message = 'Cards and chats are stored locally.', options) {
         notifyLocalOnlyMode(message, options);
       }
 
-      function notifyDbWriteDisabled(message = 'Local only mode is enabled.', options) {
+      function notifyDbWriteDisabled(message = 'Cards and chats are stored locally.', options) {
         notifyLocalOnlyMode(message, options);
       }
 
-      function notifyLocalOnlyMode(message = 'Local only mode is enabled.', options) {
+      function notifyLocalOnlyMode(message = 'Cards and chats are stored locally.', options) {
         notifyDbRestriction(message, options);
       }
 
@@ -18631,27 +17848,18 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
 
       function setLocalOnlyMode(enabled, { persist = true, updateUI = true } = {}) {
-        isLocalOnlyMode = !!enabled;
-        isDbReadDisabled = isLocalOnlyMode;
-        isDbWriteDisabled = isLocalOnlyMode;
-        if (isLocalOnlyMode) {
-          try {
-            cancelPendingPresetDatabaseSave();
-          } catch (_) {}
-          cancelAutomaticDatabaseSync();
-        }
-        if (persist) {
-          localOnlyModePreferenceSetting.save(isLocalOnlyMode);
+        isLocalOnlyMode = true;
+        isDbReadDisabled = true;
+        isDbWriteDisabled = true;
+        try {
+          cancelPendingPresetDatabaseSave();
+        } catch (_) {}
+        cancelAutomaticDatabaseSync();
+        if (persist && typeof localOnlyModePreferenceSetting?.save === 'function') {
+          localOnlyModePreferenceSetting.save(true);
         }
         if (updateUI) {
-          updateLocalOnlyToggleUI(isLocalOnlyMode);
-        }
-        if (fullDbSyncButton) {
-          fullDbSyncButton.disabled = isLocalOnlyMode;
-          fullDbSyncButton.setAttribute('aria-disabled', isLocalOnlyMode ? 'true' : 'false');
-          fullDbSyncButton.title = isLocalOnlyMode
-            ? 'Disable local only mode to sync with the database.'
-            : 'Download your latest cards/chats from the database into local storage.';
+          updateLocalOnlyToggleUI(true);
         }
       }
 
@@ -20690,13 +19898,8 @@ Write with love, write with audacity, and take initiative to drive the interacti
 
       if (localOnlyModeToggleSettings) {
         setLocalOnlyMode(isLocalOnlyMode, { persist: false, updateUI: true });
-        localOnlyModeToggleSettings.addEventListener('change', function() {
-          handleLocalOnlyToggleChange().catch((err) => {
-            console.error('Local only mode toggle failed', err);
-            showAppToastMessage(err?.message || 'Unable to update local only mode.');
-            setLocalOnlyMode(true);
-          });
-        });
+        localOnlyModeToggleSettings.disabled = true;
+        localOnlyModeToggleSettings.setAttribute('aria-disabled', 'true');
       } else {
         setLocalOnlyMode(isLocalOnlyMode, { persist: false, updateUI: false });
       }
@@ -20716,35 +19919,12 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
       if (fullDbSyncButton) {
         fullDbSyncButton.addEventListener('click', function() {
-          requestSyncPreviewConfirmation({
-            mode: 'read',
-            title: 'Full read from database?',
-            message: 'Checking database changes...',
-            confirmLabel: 'Yes, download now',
-          }).then((decision) => {
-            if (decision !== 'confirm') return;
-            cancelAutomaticDatabaseSync();
-            runFullDatabaseSync({ mode: 'manual', reason: 'settings-button' }).catch((err) => {
-              console.error('Full read failed', err);
-              showAppErrorMessage(err?.message || 'Full read failed.', { title: 'Full read failed' });
-            });
-          });
+          showAppToastMessage('Remote sync has been removed. Cards and chats are stored locally.');
         });
       }
       if (fullDbWriteButton) {
         fullDbWriteButton.addEventListener('click', function() {
-          requestSyncPreviewConfirmation({
-            mode: 'write',
-            title: 'Full write to database?',
-            message: 'Checking database changes...',
-            confirmLabel: 'Yes, upload now',
-          }).then((decision) => {
-            if (decision !== 'confirm') return;
-            uploadLocalDataToDatabase().catch((err) => {
-              console.error('Full write failed', err);
-              showAppErrorMessage(err?.message || 'Full write failed.', { title: 'Full write failed' });
-            });
-          });
+          showAppToastMessage('Remote sync has been removed. Cards and chats are stored locally.');
         });
       }
 
@@ -22607,17 +21787,12 @@ Write with love, write with audacity, and take initiative to drive the interacti
 
       async function handleChatDatabaseLoadList(options = {}) {
         const {
-          showLoadingOverlay = false,
-          loadingTitle = 'Loading chats...',
-          loadingSubtitle = 'Fetching your chats.',
           renderTarget = null,
           statusTarget = null,
-          suppressLoadingMessage = false,
           includeNewChatEntry = false,
           newChatPresetId = '',
           newChatPresetName = '',
           filterPresetId = '',
-          forceRemote = false,
         } = options || {};
         const suppressStatusMessage = statusTarget === cardActionChatStatus;
         const emptyResult = { chats: [], filteredChats: [] };
@@ -22632,7 +21807,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
               return presetId && presetId === normalizedLocalFilter;
             })
           : localChats;
-        if (!forceRemote && localChats.length) {
+        if (localChats.length) {
           if (!suppressStatusMessage) {
             setChatDatabaseMessage('', statusTarget);
           }
@@ -22644,27 +21819,8 @@ Write with love, write with audacity, and take initiative to drive the interacti
           });
           return { chats: localChats, filteredChats: localFiltered };
         }
-        if (isDbReadDisabled) {
-          if (!suppressStatusMessage) {
-            setChatDatabaseMessage(localChats.length ? '' : 'Local only mode is enabled.', statusTarget);
-          }
-          renderChatDatabaseList(localFiltered, {
-            target: renderTarget,
-            includeNewChatEntry,
-            newChatPresetId,
-            newChatPresetName,
-          });
-          return { chats: localChats, filteredChats: localFiltered };
-        }
         if (!suppressStatusMessage) {
-          setChatDatabaseMessage(
-            localChats.length
-              ? ''
-              : forceRemote
-                ? 'Chats are local-only now. Use "Full read from database" to refresh from the server.'
-                : 'No local chats found. Use "Full read from database" to download your chats.',
-            statusTarget,
-          );
+          setChatDatabaseMessage(localChats.length ? '' : 'No local chats saved yet.', statusTarget);
         }
         renderChatDatabaseList(localFiltered, {
           target: renderTarget,
@@ -22691,11 +21847,12 @@ Write with love, write with audacity, and take initiative to drive the interacti
           localChatDetail && typeof localChatDetail === 'object'
             ? (localChatDetail.data && typeof localChatDetail.data === 'object' ? localChatDetail.data : localChatDetail)
             : null;
-        const localEntries = Array.isArray(localData?.entries)
+        const storedEntries = Array.isArray(localData?.entries)
           ? localData.entries
           : Array.isArray(localData)
             ? localData
             : [];
+        const localEntries = denormalizeChatEntriesFromDatabase(storedEntries);
         const localIndexEntry = Array.isArray(cachedDatabaseChats)
           ? cachedDatabaseChats.find((chat) => typeof chat?.chat_id === 'string' && chat.chat_id.trim() === normalizedChatId)
           : null;
@@ -22745,22 +21902,15 @@ Write with love, write with audacity, and take initiative to drive the interacti
           showChatView();
           return;
         }
-        const message = 'Chat not available locally. Press "Full read from database" to download your chats.';
-        if (isDbReadDisabled) {
-          notifyDbReadDisabled(message);
-        } else {
-          showAppToastMessage(message);
-        }
+        showAppToastMessage('Chat not available locally.');
       }
 
       async function handleChatDatabaseDelete(chatId, options = {}) {
-        const endpoint = typeof chatApiEndpoint === 'string' ? chatApiEndpoint.trim() : '';
         const normalizedChatId = typeof chatId === 'string' ? chatId.trim() : '';
         if (!normalizedChatId) {
           showAppToastMessage('Unable to delete chat: missing chat ID.');
           return;
         }
-        const userId = ensureUserId(null);
 
         const {
           renderTarget = null,
@@ -22829,29 +21979,14 @@ Write with love, write with audacity, and take initiative to drive the interacti
           });
         }
         if (normalizedFilter) {
-          const activityUserId = userId || getActiveStorageNamespaceId({ create: false });
+          const activityUserId = getActiveStorageNamespaceId({ create: false });
           if (activityUserId) {
             rememberCardChatActivity(activityUserId, normalizedFilter, Date.now());
             rememberCardChatListCacheEntry(activityUserId, normalizedFilter, filteredChats, Date.now());
           }
           updateCardChatBadgeCount(normalizedFilter, filteredChats.length);
         }
-
-        if (isDbWriteDisabled || !endpoint || !userId) {
-          showToast(`Deleted chat "${deletedChatTitle}"`);
-          return;
-        }
-
-        try {
-          await requestJson(
-            `${endpoint}/${encodeURIComponent(normalizedChatId)}?userId=${encodeURIComponent(userId)}`,
-            { method: 'DELETE', defaultError: 'Unable to delete chat.' },
-          );
-          showToast(`Deleted chat "${deletedChatTitle}"`);
-        } catch (err) {
-          console.error('Failed to delete chat from database', err);
-          showAppToastMessage(err?.message || 'Unable to delete chat.');
-        }
+        showToast(`Deleted chat "${deletedChatTitle}"`);
       }
 
       function startNewChat(e) {

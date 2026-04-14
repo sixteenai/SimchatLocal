@@ -16771,12 +16771,13 @@ Write with love, write with audacity, and take initiative to drive the interacti
         }
       }
 
-      function getProxyBaseEndpoint() {
+      function getProxyBaseEndpoint({ allowLegacy = true } = {}) {
         if (anthropicProxyEndpointInput && typeof anthropicProxyEndpointInput.value === 'string') {
           return normalizeProxyBaseEndpoint(anthropicProxyEndpointInput.value);
         }
         const primary = normalizeProxyBaseEndpoint(anthropicProxyEndpointSetting.load());
         if (primary) return primary;
+        if (!allowLegacy) return '';
         try {
           const legacy = localStorage.getItem(legacyOpenaiProxyEndpointStorageKey);
           return normalizeProxyBaseEndpoint(legacy);
@@ -16785,16 +16786,17 @@ Write with love, write with audacity, and take initiative to drive the interacti
         }
       }
 
-      function getProxyEndpointForProvider(provider) {
-        return resolveProxyEndpointForProvider(getProxyBaseEndpoint(), provider);
+      function getProxyEndpointForProvider(provider, { allowLegacy = true } = {}) {
+        return resolveProxyEndpointForProvider(getProxyBaseEndpoint({ allowLegacy }), provider);
       }
 
-      function getProxyApiKey() {
+      function getProxyApiKey({ allowLegacy = true } = {}) {
         if (anthropicProxyApiKeyInput && typeof anthropicProxyApiKeyInput.value === 'string') {
           return anthropicProxyApiKeyInput.value.trim();
         }
         const primary = anthropicProxyApiKeySetting.load();
         if (primary) return primary;
+        if (!allowLegacy) return '';
         try {
           const legacy = localStorage.getItem(legacyOpenaiProxyApiKeyStorageKey);
           return typeof legacy === 'string' ? legacy.trim() : '';
@@ -16838,7 +16840,8 @@ Write with love, write with audacity, and take initiative to drive the interacti
 
       function shouldUseAnthropicProxy() {
         if (getActiveProvider() !== 'anthropic') return false;
-        return shouldUseSharedProxy();
+        if (!isProxyActive()) return false;
+        return !!getProxyBaseEndpoint({ allowLegacy: false });
       }
 
       function getOpenAIProviderLabel() {
@@ -20526,11 +20529,11 @@ Write with love, write with audacity, and take initiative to drive the interacti
           throw new Error('Model name is missing. Update it in Settings.');
         }
         if (shouldUseAnthropicProxy()) {
-          const proxyEndpoint = getProxyEndpointForProvider('anthropic');
+          const proxyEndpoint = getProxyEndpointForProvider('anthropic', { allowLegacy: false });
           if (!proxyEndpoint) {
             throw new Error('Anthropic proxy endpoint is missing. Update it in Settings.');
           }
-          const proxyApiKey = getProxyApiKey();
+          const proxyApiKey = getProxyApiKey({ allowLegacy: false });
           if (!proxyApiKey) {
             throw createMissingApiKeyError('Anthropic proxy');
           }

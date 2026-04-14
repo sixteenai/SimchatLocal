@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SimChat</title>
   <meta name="db-worker-endpoint" content="" />
-  <meta name="paid-worker-endpoint" content="" />
-  <meta name="paid-worker-region" content="" />
   <meta name="app-version" content="" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -2540,44 +2538,6 @@
             </span>
           </summary>
           <div class="mt-3 space-y-3">
-            <div class="flex items-center justify-between gap-4 rounded-lg border border-gray-700 bg-[#1E1E1E] px-3 py-3">
-              <div>
-                <p class="text-sm font-medium text-gray-200">Use Paid Mode</p>
-                <p class="text-xs text-gray-400">This currently does nothing.</p>
-              </div>
-              <label class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center">
-                <input type="checkbox" id="paidModeToggleSettings" class="peer sr-only" aria-label="Toggle paid mode" />
-                <span
-                  class="pointer-events-none inline-block h-full w-full rounded-full bg-gray-700 transition peer-checked:bg-blue-600 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-blue-400"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="pointer-events-none absolute left-1 top-1 h-4 w-4 rounded-full bg-gray-300 transition-transform peer-checked:translate-x-5 peer-checked:bg-white"
-                  aria-hidden="true"
-                ></span>
-              </label>
-            </div>
-            <div class="flex items-center justify-between gap-4 rounded-lg border border-gray-700 bg-[#1E1E1E] px-3 py-3">
-              <div>
-                <p class="text-sm font-medium text-gray-200">Force use API key</p>
-              </div>
-              <label class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center">
-                <input
-                  type="checkbox"
-                  id="forceUseApiKeyToggleSettings"
-                  class="peer sr-only"
-                  aria-label="Force use API key"
-                />
-                <span
-                  class="pointer-events-none inline-block h-full w-full rounded-full bg-gray-700 transition peer-checked:bg-blue-600 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-blue-400"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="pointer-events-none absolute left-1 top-1 h-4 w-4 rounded-full bg-gray-300 transition-transform peer-checked:translate-x-5 peer-checked:bg-white"
-                  aria-hidden="true"
-                ></span>
-              </label>
-            </div>
             <div class="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-3">
               <p class="text-sm font-medium text-emerald-100">Local storage is the source of truth</p>
               <p class="text-xs text-emerald-50/80">Cards, chats, and related app data stay on this device.</p>
@@ -5640,7 +5600,7 @@
             if (!isDbWriteDisabled) {
               const uploadResult = await uploadPresetAvatarDataUrl(nextAvatarUrl, { presetIdOverride: presetId });
               if (!uploadResult) {
-                showAppToastMessage('Unable to save updated card image to the database.');
+                showAppToastMessage('Unable to save updated card image locally.');
               }
             } else {
               const displayName = getActivePresetNameForDisplay() || 'Card';
@@ -5861,29 +5821,6 @@
       const profileModalSubline = document.getElementById('profileModalSubline');
       const profileModalAvatar = document.getElementById('profileModalAvatar');
 
-      function resolvePaidWorkerEndpoint() {
-        if (typeof document === 'undefined') {
-          return '';
-        }
-        const metaTag = document.querySelector('meta[name="paid-worker-endpoint"]');
-        const metaValue = metaTag && typeof metaTag.content === 'string' ? metaTag.content.trim() : '';
-        if (metaValue) {
-          return metaValue.replace(/\/+$/, '');
-        }
-        return '';
-      }
-
-      function resolvePaidWorkerRegion() {
-        if (typeof document === 'undefined') {
-          return '';
-        }
-        const metaTag = document.querySelector('meta[name="paid-worker-region"]');
-        const metaValue = metaTag && typeof metaTag.content === 'string' ? metaTag.content.trim() : '';
-        return metaValue;
-      }
-
-      const paidWorkerEndpoint = resolvePaidWorkerEndpoint();
-      const paidWorkerRegion = resolvePaidWorkerRegion();
       let cachedUserNameSettingValue = '';
 
       const defaultSidebarAvatarSrc = sidebarPillAvatar ? sidebarPillAvatar.getAttribute('src') : '';
@@ -5974,8 +5911,6 @@
       const autoRefreshSettingsRow = document.getElementById('autoRefreshSettingsRow');
       const streamingToggleInput = document.getElementById('streamingToggle');
       const thinkingToggleInput = document.getElementById('thinkingToggle');
-      const paidModeToggleSettings = document.getElementById('paidModeToggleSettings');
-      const forceUseApiKeyToggleSettings = document.getElementById('forceUseApiKeyToggleSettings');
       const backtickDialogueToggle = document.getElementById('backtickDialogueToggle');
       const anthropicProxyButton = document.getElementById('anthropicProxyButton');
       const anthropicProxyPanel = document.getElementById('anthropicProxyPanel');
@@ -6046,8 +5981,6 @@
       const streamingPreferenceKey = 'simpletavern.streamingEnabled';
       const thinkingPreferenceKey = 'simpletavern.thinkingEnabled';
       const tokenStatsWindowPreferenceKey = 'simpletavern.tokenStats.window';
-      const paidModePreferenceKey = 'simpletavern.paidMode';
-      const forceUseApiKeyPreferenceKey = 'simpletavern.forceUseApiKey';
       const localLibraryMetaStorageKey = 'simpletavern.localdb.meta';
       const localLibraryPresetsIndexStorageKey = 'simpletavern.localdb.presets.index';
       const localLibraryPresetDetailStorageKey = 'simpletavern.localdb.presets.detail';
@@ -6290,63 +6223,6 @@
 
       const chatPersistenceDebugEvents = [];
       const maxChatPersistenceDebugEvents = 80;
-      const localDebugCollectorEndpoint = 'http://127.0.0.1:43127/simchat-debug';
-      let pendingChatPersistenceLogBatch = [];
-      let pendingChatPersistenceLogFlush = null;
-
-      function scheduleChatPersistenceLogFlush({ immediate = false } = {}) {
-        if (typeof window === 'undefined') return;
-        if (immediate) {
-          if (pendingChatPersistenceLogFlush) {
-            window.clearTimeout(pendingChatPersistenceLogFlush);
-            pendingChatPersistenceLogFlush = null;
-          }
-          flushChatPersistenceLogs({ useBeacon: true });
-          return;
-        }
-        if (pendingChatPersistenceLogFlush) return;
-        pendingChatPersistenceLogFlush = window.setTimeout(() => {
-          pendingChatPersistenceLogFlush = null;
-          flushChatPersistenceLogs();
-        }, 250);
-      }
-
-      function flushChatPersistenceLogs({ useBeacon = false } = {}) {
-        if (!pendingChatPersistenceLogBatch.length || typeof window === 'undefined') return false;
-        const batch = pendingChatPersistenceLogBatch.slice();
-        pendingChatPersistenceLogBatch = [];
-        const payload = {
-          type: 'chat-storage-events',
-          emittedAt: new Date().toISOString(),
-          namespaceId: getActiveStorageNamespaceId({ create: false }),
-          href:
-            window.location && typeof window.location.href === 'string'
-              ? window.location.href
-              : '',
-          events: batch,
-        };
-        const serialized = JSON.stringify(payload);
-        try {
-          if (useBeacon && navigator && typeof navigator.sendBeacon === 'function') {
-            const blob = new Blob([serialized], { type: 'application/json' });
-            if (navigator.sendBeacon(localDebugCollectorEndpoint, blob)) {
-              return true;
-            }
-          }
-        } catch (_) {}
-        try {
-          fetch(localDebugCollectorEndpoint, {
-            method: 'POST',
-            mode: 'cors',
-            keepalive: true,
-            headers: { 'Content-Type': 'application/json' },
-            body: serialized,
-          }).catch(() => {});
-          return true;
-        } catch (_) {
-          return false;
-        }
-      }
 
       function recordChatPersistenceDebugEvent(type, payload = {}) {
         const event = {
@@ -6361,12 +6237,6 @@
         try {
           console.info('[simchat][chat-storage]', event);
         } catch (_) {}
-        pendingChatPersistenceLogBatch.push(event);
-        if (pendingChatPersistenceLogBatch.length > 25) {
-          flushChatPersistenceLogs();
-        } else {
-          scheduleChatPersistenceLogFlush();
-        }
         return event;
       }
 
@@ -6451,17 +6321,7 @@
           return snapshot;
         };
         existing.getChatStorageEvents = () => chatPersistenceDebugEvents.slice();
-        existing.flushChatStorageEvents = () => flushChatPersistenceLogs({ useBeacon: false });
         window.simchatDebug = existing;
-        if (!window.__simchatChatStorageLogFlushBound) {
-          window.addEventListener('pagehide', () => {
-            scheduleChatPersistenceLogFlush({ immediate: true });
-          });
-          window.addEventListener('beforeunload', () => {
-            scheduleChatPersistenceLogFlush({ immediate: true });
-          });
-          window.__simchatChatStorageLogFlushBound = true;
-        }
       }
 
       installSimchatDebugApi();
@@ -7197,7 +7057,6 @@
       let isAssistantResponsePending = false;
       let isAutoRefreshEnabled = false;
       let isLocalOnlyMode = false;
-      let isPaidModeEnabled = false;
       let allowLocalOnlyDbAccess = false;
       let isDbReadDisabled = false;
       let isDbWriteDisabled = false;
@@ -8571,30 +8430,56 @@ Chat history:`;
         if (!provisionalId || !realPresetId || !Array.isArray(cachedDatabasePresets)) return;
         optimisticPresetIdAliases.set(provisionalId, realPresetId);
         let updated = false;
-        cachedDatabasePresets = ensureBuiltInSummarizePreset(cachedDatabasePresets.map((entry) => {
-          if (!entry || entry.preset_id !== provisionalId) return entry;
-          updated = true;
-          const hydratedName =
-            presetData && typeof presetData.preset_name === 'string' && presetData.preset_name.trim()
-              ? presetData.preset_name.trim()
-              : entry.preset_name;
-          const hydratedAvatarKey =
-            presetData && typeof presetData.avatar_r2_key === 'string'
-              ? presetData.avatar_r2_key
-              : entry.avatar_r2_key;
-          const hydratedCreatedAt =
-            presetData && typeof presetData.created_at === 'string'
-              ? presetData.created_at
-              : entry.created_at;
-          return {
-            ...entry,
-            preset_id: realPresetId,
-            preset_name: hydratedName,
-            avatar_r2_key: hydratedAvatarKey || null,
-            created_at: hydratedCreatedAt || entry.created_at || null,
-            isOptimisticImport: false,
-          };
-        }));
+        let mergedOptimisticEntry = null;
+        cachedDatabasePresets = ensureBuiltInSummarizePreset(
+          cachedDatabasePresets.reduce((nextEntries, entry) => {
+            if (!entry) return nextEntries;
+            if (entry.preset_id === provisionalId) {
+              updated = true;
+              const hydratedName =
+                presetData && typeof presetData.preset_name === 'string' && presetData.preset_name.trim()
+                  ? presetData.preset_name.trim()
+                  : entry.preset_name;
+              const hydratedAvatarKey =
+                presetData && typeof presetData.avatar_r2_key === 'string'
+                  ? presetData.avatar_r2_key
+                  : entry.avatar_r2_key;
+              const hydratedCreatedAt =
+                presetData && typeof presetData.created_at === 'string'
+                  ? presetData.created_at
+                  : entry.created_at;
+              mergedOptimisticEntry = {
+                ...entry,
+                preset_id: realPresetId,
+                preset_name: hydratedName,
+                avatar_r2_key: hydratedAvatarKey || null,
+                created_at: hydratedCreatedAt || entry.created_at || null,
+                isOptimisticImport: false,
+              };
+              return nextEntries;
+            }
+            if (entry.preset_id === realPresetId && mergedOptimisticEntry) {
+              nextEntries.push({
+                ...entry,
+                preset_name: mergedOptimisticEntry.preset_name || entry.preset_name,
+                avatar_r2_key: mergedOptimisticEntry.avatar_r2_key || entry.avatar_r2_key || null,
+                avatarUrlOverride: mergedOptimisticEntry.avatarUrlOverride || entry.avatarUrlOverride || null,
+                created_at: mergedOptimisticEntry.created_at || entry.created_at || null,
+                isOptimisticImport: false,
+              });
+              mergedOptimisticEntry = null;
+              return nextEntries;
+            }
+            nextEntries.push(entry);
+            return nextEntries;
+          }, []),
+        );
+        if (mergedOptimisticEntry) {
+          cachedDatabasePresets = ensureBuiltInSummarizePreset([
+            mergedOptimisticEntry,
+            ...cachedDatabasePresets.filter((entry) => !entry || entry.preset_id !== realPresetId),
+          ]);
+        }
         if (updated) {
           renderCardsGrid(cachedDatabasePresets, { forceAvatarBust: true });
         }
@@ -12988,10 +12873,15 @@ Write with love, write with audacity, and take initiative to drive the interacti
 	            const nameForMessages = getActivePresetNameForDisplay() || displayName;
 	            const uploadableAvatar =
 	              resolvedAvatar && resolvedAvatar.startsWith('data:') ? resolvedAvatar : null;
+	            const namespaceId = getActiveStorageNamespaceId({ create: true });
 	            if (uploadableAvatar) {
 	              // Immediately reflect avatar in cache for cards while upload occurs.
-	              if (createdPresetId && userId) {
-	                updateCachedPresetAvatar(createdPresetId, { avatarUrl: uploadableAvatar, avatarKey: null, userId });
+	              if (createdPresetId && namespaceId) {
+	                updateCachedPresetAvatar(createdPresetId, {
+	                  avatarUrl: uploadableAvatar,
+	                  avatarKey: null,
+	                  userId: namespaceId,
+	                });
 	              }
 	              const uploaded = await uploadPresetAvatarDataUrl(uploadableAvatar, {
 	                presetIdOverride: createdPresetId,
@@ -13002,7 +12892,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
 	                updateCachedPresetAvatar(createdPresetId, {
 	                  avatarUrl: uploadableAvatar,
 	                  avatarKey: uploaded.avatarKey || null,
-	                  userId,
+	                  userId: namespaceId,
 	                });
 	              }
 	            } else {
@@ -15274,20 +15164,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         deserialize: (value) => value,
         shouldRemove: (value) => !value,
       });
-      const paidModePreferenceSetting = createStoredSetting({
-        key: paidModePreferenceKey,
-        defaultValue: false,
-        normalize: (value) => !!value,
-        serialize: (value) => (value ? 'true' : 'false'),
-        deserialize: (value) => value === 'true',
-      });
-      const forceUseApiKeyPreferenceSetting = createStoredSetting({
-        key: forceUseApiKeyPreferenceKey,
-        defaultValue: false,
-        normalize: (value) => !!value,
-        serialize: (value) => (value ? 'true' : 'false'),
-        deserialize: (value) => value === 'true',
-      });
       const anthropicProxyEnabledPreferenceSetting = createStoredSetting({
         key: anthropicProxyEnabledPreferenceKey,
         defaultValue: false,
@@ -15298,8 +15174,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
       isLocalOnlyMode = true;
       isDbReadDisabled = true;
       isDbWriteDisabled = true;
-      isPaidModeEnabled = paidModePreferenceSetting.load();
-      let isForceUseApiKeyEnabled = forceUseApiKeyPreferenceSetting.load();
       let isAnthropicProxyEnabled = anthropicProxyEnabledPreferenceSetting.load();
 
       updateSidebarProfileName(userNameSetting.load());
@@ -16226,7 +16100,7 @@ Write with love, write with audacity, and take initiative to drive the interacti
       }
 
       function isCacheStatsSupportedForModel(modelName) {
-        return getProviderForModelName(modelName) === 'anthropic' || shouldUsePaidModeRequests();
+        return getProviderForModelName(modelName) === 'anthropic';
       }
 
       function updateCacheMinimumTokensDisplay() {
@@ -16676,60 +16550,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         }
         if (updateUI) {
           updateStreamingToggleUI(isStreamingEnabled);
-        }
-      }
-
-      function updatePaidModeToggleUI(enabled) {
-        if (!paidModeToggleSettings) return;
-        paidModeToggleSettings.checked = !!enabled;
-      }
-
-      function updateForceUseApiKeyToggleUI(enabled) {
-        if (!forceUseApiKeyToggleSettings) return;
-        forceUseApiKeyToggleSettings.checked = !!enabled;
-      }
-
-      function updateApiKeyInputsForPaidMode(enabled) {
-        const inputs = [
-          { el: anthropicApiKeyInput, fallbackPlaceholder: 'sk-ant-...' },
-          { el: googleApiKeyInput, fallbackPlaceholder: 'AIza...' },
-          { el: openaiApiKeyInput, fallbackPlaceholder: 'sk-...' },
-        ];
-        inputs.forEach(({ el, fallbackPlaceholder }) => {
-          if (!el) return;
-          el.disabled = false;
-          el.setAttribute('aria-disabled', 'false');
-          if (el.dataset && typeof el.dataset.prevPlaceholder !== 'undefined') {
-            el.placeholder = el.dataset.prevPlaceholder || fallbackPlaceholder;
-            delete el.dataset.prevPlaceholder;
-          }
-          if (el.placeholder === 'Disabled in paid mode') {
-            el.placeholder = fallbackPlaceholder;
-          }
-          if (el.title === 'Disabled while paid mode is enabled.') {
-            el.title = '';
-          }
-        });
-      }
-
-      function setPaidModeEnabled(enabled, { persist = true, updateUI = true } = {}) {
-        isPaidModeEnabled = !!enabled;
-        if (persist) {
-          paidModePreferenceSetting.save(isPaidModeEnabled);
-        }
-        if (updateUI) {
-          updatePaidModeToggleUI(isPaidModeEnabled);
-        }
-        updateApiKeyInputsForPaidMode(isPaidModeEnabled);
-      }
-
-      function setForceUseApiKeyEnabled(enabled, { persist = true, updateUI = true } = {}) {
-        isForceUseApiKeyEnabled = !!enabled;
-        if (persist) {
-          forceUseApiKeyPreferenceSetting.save(isForceUseApiKeyEnabled);
-        }
-        if (updateUI) {
-          updateForceUseApiKeyToggleUI(isForceUseApiKeyEnabled);
         }
       }
 
@@ -17282,43 +17102,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         assistantPrefillModelNotice.hidden = isSupported;
       }
 
-      const paidModeBedrockModelIds = new Map([
-        ['claude-opus-4-6', 'global.anthropic.claude-opus-4-6-v1'],
-        ['claude-sonnet-4-5-20250929', 'global.anthropic.claude-sonnet-4-5-20250929-v1:0'],
-        ['claude-haiku-4-5-20251001', 'global.anthropic.claude-haiku-4-5-20251001-v1:0'],
-        ['claude-opus-4-5-20251101', 'global.anthropic.claude-opus-4-5-20251101-v1:0'],
-      ]);
-
-      function isPaidModeActive() {
-        if (paidModeToggleSettings) {
-          return !!paidModeToggleSettings.checked;
-        }
-        return paidModePreferenceSetting.load();
-      }
-
-      function isForceUseApiKeyActive() {
-        if (forceUseApiKeyToggleSettings) {
-          return !!forceUseApiKeyToggleSettings.checked;
-        }
-        return forceUseApiKeyPreferenceSetting.load();
-      }
-
-      function shouldUsePaidModeRequests() {
-        if (!isPaidModeActive() || isForceUseApiKeyActive()) return false;
-        if (getActiveProvider() !== 'anthropic') return false;
-        return !!getPaidModeModelId(getActiveModelName());
-      }
-
-      function shouldUsePaidGoogleProxy() {
-        return false;
-      }
-
-      function getPaidModeModelId(modelName) {
-        const normalized = typeof modelName === 'string' ? modelName.trim() : '';
-        if (!normalized) return '';
-        return paidModeBedrockModelIds.get(normalized) || '';
-      }
-
       function getProviderLabel(provider) {
         if (provider === 'anthropic') return 'Anthropic';
         if (provider === 'google') return 'Google';
@@ -17716,26 +17499,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         isBacktickDialogueDisplayEnabled = backtickDialoguePreferenceSetting.load();
       }
 
-      if (paidModeToggleSettings) {
-        const initialPaidModeState = paidModePreferenceSetting.load();
-        setPaidModeEnabled(initialPaidModeState, { persist: false, updateUI: true });
-        paidModeToggleSettings.addEventListener('change', function() {
-          setPaidModeEnabled(paidModeToggleSettings.checked);
-        });
-      } else {
-        isPaidModeEnabled = paidModePreferenceSetting.load();
-        updateApiKeyInputsForPaidMode(isPaidModeEnabled);
-      }
-
-      if (forceUseApiKeyToggleSettings) {
-        const initialForceUseApiKeyState = forceUseApiKeyPreferenceSetting.load();
-        setForceUseApiKeyEnabled(initialForceUseApiKeyState, { persist: false, updateUI: true });
-        forceUseApiKeyToggleSettings.addEventListener('change', function() {
-          setForceUseApiKeyEnabled(forceUseApiKeyToggleSettings.checked);
-        });
-      } else {
-        isForceUseApiKeyEnabled = forceUseApiKeyPreferenceSetting.load();
-      }
       setLocalOnlyMode(isLocalOnlyMode, { persist: false, updateUI: false });
       if (anthropicProxyButton) {
         anthropicProxyButton.addEventListener('click', function() {
@@ -20401,32 +20164,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         return messages;
       }
 
-      function buildBedrockMessagesFromAnthropic(messages) {
-        if (!Array.isArray(messages)) return [];
-        const bedrockMessages = [];
-        messages.forEach((message) => {
-          if (!message || typeof message !== 'object') return;
-          const role = message.role === 'assistant' ? 'assistant' : 'user';
-          const blocks = Array.isArray(message.content) ? message.content : [];
-          const contentBlocks = [];
-          blocks.forEach((block) => {
-            if (!block || typeof block !== 'object') return;
-            const text = typeof block.text === 'string' ? block.text : '';
-            if (!text.trim()) return;
-            contentBlocks.push({ text });
-            if (role === 'user' && block.cache_control && typeof block.cache_control === 'object') {
-              contentBlocks.push({ cachePoint: { type: 'default' } });
-            }
-          });
-          if (!contentBlocks.length) return;
-          bedrockMessages.push({
-            role,
-            content: contentBlocks,
-          });
-        });
-        return bedrockMessages;
-      }
-
       function buildGoogleContents(history, { userNameValue, charNameValue, customEntries } = {}) {
         const activeUserName = typeof userNameValue === 'string' ? userNameValue : getCurrentUserName();
         const activeCharName = typeof charNameValue === 'string' ? charNameValue : getCurrentCharName();
@@ -21375,116 +21112,16 @@ Write with love, write with audacity, and take initiative to drive the interacti
         return { text: accumulated.trim(), usage: usageTotals };
       }
 
-      async function readBedrockStream(response, { onStreamDelta, registerReader } = {}) {
-        if (!response.ok) {
-          const text = await response.text();
-          let message = text || `Paid mode request failed with status ${response.status}.`;
-          try {
-            const parsed = JSON.parse(text);
-            message = parsed?.error || parsed?.message || parsed?.body || message;
-          } catch (_) {
-            // Ignore parse errors.
-          }
-          throw new Error(message);
-        }
-        if (!response.body || typeof response.body.getReader !== 'function') {
-          throw new Error('Streaming is not supported in this browser.');
-        }
-
-        const reader = response.body.getReader();
-        if (typeof registerReader === 'function') {
-          registerReader(reader);
-        }
-        const decoder = new TextDecoder('utf-8');
-        let buffer = '';
-        let accumulated = '';
-        let usageTotals = null;
-
-        const handlePayload = (payload) => {
-          if (!payload || typeof payload !== 'object') return;
-          if (payload.type === 'error') {
-            throw new Error(payload.error?.message || 'Bedrock streaming error.');
-          }
-          if ((payload.type === 'metadata' || payload.metadata) && payload.usage) {
-            usageTotals = payload.usage;
-          }
-          const hasDeltaType =
-            payload.type === 'content_block_delta'
-            || payload.type === 'contentBlockDelta'
-            || typeof payload.contentBlockDelta === 'object'
-            || typeof payload.content_block_delta === 'object';
-          if (!hasDeltaType) {
-            return;
-          }
-          const delta =
-            payload.delta
-            || (payload.contentBlockDelta && payload.contentBlockDelta.delta)
-            || (payload.content_block_delta && payload.content_block_delta.delta);
-          if (!delta || typeof delta !== 'object') return;
-          const deltaType = delta.type || delta.deltaType;
-          const textChunk =
-            deltaType === 'text_delta'
-              ? delta.text || ''
-              : typeof delta.text === 'string'
-                ? delta.text
-                : '';
-          if (!textChunk) return;
-          accumulated += textChunk;
-          if (typeof onStreamDelta === 'function') {
-            onStreamDelta(accumulated);
-          }
-        };
-
-        const processLine = (line) => {
-          const trimmed = line.trim();
-          if (!trimmed || trimmed.startsWith(':')) return;
-          if (!trimmed.startsWith('data:')) return;
-          const raw = trimmed.slice(5).trim();
-          if (!raw || raw === '[DONE]') return;
-          try {
-            const payload = JSON.parse(raw);
-            handlePayload(payload);
-          } catch (_) {
-            // Ignore malformed chunks.
-          }
-        };
-
-        try {
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split(/\r?\n/);
-            buffer = lines.pop() || '';
-            lines.forEach((line) => processLine(line));
-          }
-          if (buffer) {
-            buffer.split(/\r?\n/).forEach((line) => processLine(line));
-          }
-        } finally {
-          if (typeof registerReader === 'function') {
-            registerReader(null);
-          }
-          try {
-            reader.releaseLock();
-          } catch (_) {
-            // Ignore release errors.
-          }
-        }
-
-        return { text: accumulated.trim(), usage: usageTotals };
-      }
-
       async function requestGoogleCompletion(
         historySnapshot,
-        { onStreamDelta, maxTokens, presetOverride = null, usePaidWorker = false } = {}
+        { onStreamDelta, maxTokens, presetOverride = null } = {}
       ) {
         const model = modelNameInput ? modelNameInput.value.trim() : '';
         if (!model) {
           throw new Error('Google model is missing. Update it in Settings.');
         }
-        const apiKey = usePaidWorker ? '' : (googleApiKeyInput ? googleApiKeyInput.value.trim() : '');
-        if (!usePaidWorker && !apiKey) {
+        const apiKey = googleApiKeyInput ? googleApiKeyInput.value.trim() : '';
+        if (!apiKey) {
           throw createMissingApiKeyError('Google');
         }
         const useStreaming = !!isStreamingEnabled;
@@ -21647,35 +21284,18 @@ Write with love, write with audacity, and take initiative to drive the interacti
 
         const controller = typeof AbortController === 'function' ? new AbortController() : null;
         activeGoogleAbortController = controller;
-
-        const userId = usePaidWorker
-          ? ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'))
-          : null;
-        if (usePaidWorker && !paidWorkerEndpoint) {
-          throw new Error('Paid worker endpoint is not configured.');
-        }
-        if (usePaidWorker && !userId) {
-          throw new Error('No user ID is available. Request a cookie first.');
-        }
-
-        const endpoint = usePaidWorker
-          ? `${paidWorkerEndpoint}/google`
-          : useStreaming
-            ? `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`
-            : `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        const endpoint = useStreaming
+          ? `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`
+          : `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
         const requestOptions = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey,
           },
-          body: usePaidWorker
-            ? JSON.stringify({ userId, model, payload, stream: useStreaming })
-            : payloadJson,
+          body: payloadJson,
         };
-        if (!usePaidWorker) {
-          requestOptions.headers['x-goog-api-key'] = apiKey;
-        }
         if (controller && controller.signal) {
           requestOptions.signal = controller.signal;
         }
@@ -21976,32 +21596,6 @@ Write with love, write with audacity, and take initiative to drive the interacti
         historySnapshot,
         { onStreamDelta, onThinkingDelta, maxTokens, presetOverride = null } = {}
       ) {
-        if (shouldUsePaidModeRequests()) {
-          if (!paidWorkerEndpoint) {
-            throw new Error('Paid worker endpoint is not configured.');
-          }
-          if (getActiveProvider() === 'google') {
-            return requestGoogleCompletion(historySnapshot, {
-              onStreamDelta,
-              maxTokens,
-              presetOverride,
-              usePaidWorker: true,
-            });
-          }
-          const paidModelId = getPaidModeModelId(getActiveModelName());
-          if (!paidModelId) {
-            throw new Error('Paid mode supports Claude Opus 4.6/4.5, Sonnet 4.5, or Haiku 4.5 only.');
-          }
-          return requestPaidBedrockCompletion(historySnapshot, { onStreamDelta, maxTokens, presetOverride });
-        }
-        if (shouldUsePaidGoogleProxy()) {
-          return requestGoogleCompletion(historySnapshot, {
-            onStreamDelta,
-            maxTokens,
-            presetOverride,
-            usePaidWorker: true,
-          });
-        }
         if (getActiveProvider() === 'google') {
           return requestGoogleCompletion(historySnapshot, { onStreamDelta, maxTokens, presetOverride });
         }
@@ -22011,233 +21605,10 @@ Write with love, write with audacity, and take initiative to drive the interacti
         return requestAnthropicCompletion(historySnapshot, { onStreamDelta, onThinkingDelta, maxTokens, presetOverride });
       }
 
-      async function requestPaidBedrockCompletion(
-        historySnapshot,
-        { onStreamDelta, maxTokens, presetOverride = null } = {}
-      ) {
-        const paidModelId = getPaidModeModelId(getActiveModelName());
-        if (!paidWorkerEndpoint) {
-          throw new Error('Paid worker endpoint is not configured.');
-        }
-        if (!paidModelId) {
-          throw new Error('Paid mode supports Claude Opus 4.6/4.5, Sonnet 4.5, or Haiku 4.5 only.');
-        }
-        const useStreaming = !!isStreamingEnabled;
-        const resolvedMaxTokens = Number.isFinite(maxTokens) && maxTokens > 0
-          ? Math.max(1, Math.floor(maxTokens))
-          : anthropicMaxTokens;
-        setActiveAnthropicStreamReader(null);
-        const currentUserName = getCurrentUserName();
-        const currentCharName = getCurrentCharName();
-        const tokenScanTexts = [];
-        if (Array.isArray(historySnapshot)) {
-          historySnapshot.forEach((entry) => {
-            if (entry && typeof entry.content === 'string') {
-              tokenScanTexts.push(entry.content);
-            }
-          });
-        }
-        const resolvedCustomEntries =
-          presetOverride && presetOverride.customEntries
-            ? presetOverride.customEntries
-            : getCustomPresetMessageEntries();
-        const customBefore = Array.isArray(resolvedCustomEntries.before)
-          ? resolvedCustomEntries.before
-          : [];
-        const customAfter = Array.isArray(resolvedCustomEntries.after)
-          ? resolvedCustomEntries.after
-          : [];
-        [...customBefore, ...customAfter].forEach((entry) => {
-          if (entry && typeof entry.content === 'string') {
-            tokenScanTexts.push(entry.content);
-          }
-        });
-        const systemPromptCandidate =
-          presetOverride && typeof presetOverride.systemPrompt === 'string'
-            ? presetOverride.systemPrompt
-            : systemPromptText;
-        if (typeof systemPromptCandidate === 'string') {
-          tokenScanTexts.push(systemPromptCandidate);
-        }
-        const assistantPrefillCandidate =
-          presetOverride && typeof presetOverride.assistantPrefill === 'string'
-            ? presetOverride.assistantPrefill
-            : assistantPrefillText;
-        if (typeof assistantPrefillCandidate === 'string') {
-          tokenScanTexts.push(assistantPrefillCandidate);
-        }
-        const manualPrefillCandidate =
-          presetOverride && typeof presetOverride.manualPrefill !== 'undefined'
-            ? presetOverride.manualPrefill
-            : manualAssistantPrefillText;
-        if (typeof manualPrefillCandidate === 'string') {
-          tokenScanTexts.push(manualPrefillCandidate);
-        }
-        maybeWarnMissingUserNameTokenUsage(tokenScanTexts);
-        const requestMessages = buildAnthropicMessages(historySnapshot, {
-          userNameValue: currentUserName,
-          charNameValue: currentCharName,
-          customEntries: resolvedCustomEntries,
-        });
-        const assistantPrefillForApi = isThinkingEnabled
-          ? ''
-          : getCombinedAssistantPrefill({
-              userName: currentUserName,
-              charName: currentCharName,
-              assistantPrefillOverride: presetOverride ? presetOverride.assistantPrefill : null,
-              manualPrefillOverride: presetOverride ? presetOverride.manualPrefill : null,
-            });
-        if (assistantPrefillForApi) {
-          requestMessages.push({
-            role: 'assistant',
-            content: [{ type: 'text', text: assistantPrefillForApi }],
-          });
-        }
-
-        const promptSource =
-          presetOverride && typeof presetOverride.systemPrompt === 'string'
-            ? presetOverride.systemPrompt
-            : systemPromptText;
-        const prompt = typeof promptSource === 'string' ? promptSource : '';
-        const promptForApi = replaceTemplateTokens(prompt, { userName: currentUserName, charName: currentCharName });
-
-        const userId = ensureUserId(() => showAppToastMessage('No user ID is available. Request a cookie first.'));
-        if (!userId) {
-          throw new Error('No user ID is available. Request a cookie first.');
-        }
-
-        const payload = {
-          userId,
-          modelId: paidModelId,
-          messages: buildBedrockMessagesFromAnthropic(requestMessages),
-          inferenceConfig: {
-            maxTokens: resolvedMaxTokens,
-            temperature: anthropicTemperature,
-          },
-        };
-        if (useStreaming) {
-          payload.stream = true;
-        }
-        if (paidWorkerRegion) {
-          payload.region = paidWorkerRegion;
-        }
-        if (promptForApi && promptForApi.trim()) {
-          payload.system = [{ text: promptForApi }];
-        }
-
-        const payloadJson = JSON.stringify(payload);
-        lastAnthropicPayloadJson = payloadJson;
-        lastAnthropicResponseRaw = null;
-        lastAnthropicResponseParsed = null;
-        lastAnthropicResponseText = null;
-        debugStreamingInProgress = false;
-        updateDebugLastPayload();
-
-        const controller = typeof AbortController === 'function' ? new AbortController() : null;
-        activeAnthropicAbortController = controller;
-        const endpoint = `${paidWorkerEndpoint}/chat`;
-        const requestOptions = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: payloadJson,
-        };
-        if (controller && controller.signal) {
-          requestOptions.signal = controller.signal;
-        }
-
-        if (useStreaming) {
-          try {
-            const response = await fetch(endpoint, requestOptions);
-            const streamResult = await readBedrockStream(response, {
-              onStreamDelta,
-              registerReader: setActiveAnthropicStreamReader,
-            });
-            if (!streamResult.text || !streamResult.text.trim()) {
-              throw new Error('Paid mode returned an empty response.');
-            }
-            const usage = mapBedrockUsageMetadata(streamResult.usage) || streamResult.usage;
-            if (usage) {
-              streamResult.usage = usage;
-            }
-            lastAnthropicResponseRaw = JSON.stringify({
-              text: streamResult.text,
-              usage: streamResult.usage || null,
-            });
-            lastAnthropicResponseParsed = { text: streamResult.text, usage: streamResult.usage || null };
-            if (streamResult.usage) {
-              applyCacheUsageFromPayload({ usage: streamResult.usage });
-              recordTokenUsageFromPayload({ usage: streamResult.usage });
-            }
-            lastAnthropicResponseText = streamResult.text;
-            updateDebugLastPayload();
-            return { text: streamResult.text, thinking: '', streamed: true };
-          } finally {
-            if (controller && activeAnthropicAbortController === controller) {
-              activeAnthropicAbortController = null;
-            }
-          }
-        }
-
-        const response = await fetch(endpoint, requestOptions);
-        const responseText = await response.text();
-        if (!response.ok) {
-          let errMessage = `Paid mode request failed with status ${response.status}.`;
-          if (responseText) {
-            try {
-              const parsedError = JSON.parse(responseText);
-              errMessage = parsedError?.body || parsedError?.error || parsedError?.message || responseText;
-            } catch (_) {
-              errMessage = responseText;
-            }
-          }
-          const error = new Error(errMessage);
-          error.status = response.status;
-          throw error;
-        }
-
-        let data;
-        try {
-          data = JSON.parse(responseText);
-        } catch (_) {
-          throw new Error('Paid mode response was not valid JSON.');
-        }
-
-        const contentBlocks = data?.output?.message?.content;
-        const text = Array.isArray(contentBlocks)
-          ? contentBlocks
-              .map((block) => (block && typeof block.text === 'string' ? block.text : ''))
-              .filter(Boolean)
-              .join('')
-              .trim()
-          : '';
-        if (!text) {
-          throw new Error('Paid mode returned an empty response.');
-        }
-
-        const usage = mapBedrockUsageMetadata(data?.usage);
-        if (usage) {
-          data.usage = usage;
-        }
-
-        lastAnthropicResponseRaw = responseText;
-        lastAnthropicResponseParsed = data;
-        applyCacheUsageFromPayload(data);
-        recordTokenUsageFromPayload(data);
-        lastAnthropicResponseText = text;
-        updateDebugLastPayload();
-
-        return { text, thinking: '', streamed: false };
-      }
-
       async function requestAnthropicCompletion(
         historySnapshot,
         { onStreamDelta, onThinkingDelta, maxTokens, presetOverride = null } = {},
       ) {
-        if (shouldUsePaidModeRequests()) {
-          throw new Error('Paid mode is enabled. Direct Anthropic API calls are disabled.');
-        }
         const { apiKey, model, endpoint, usesProxy } = getAnthropicConfig();
         const useStreaming = !!isStreamingEnabled;
         const resolvedMaxTokens = Number.isFinite(maxTokens) && maxTokens > 0
@@ -22459,62 +21830,24 @@ Write with love, write with audacity, and take initiative to drive the interacti
         if (!hasComposerText && !canReuseLastUser) {
           return;
         }
-        if (shouldUsePaidModeRequests()) {
-          if (!paidWorkerEndpoint) {
+        try {
+          getProviderConfig();
+        } catch (err) {
+          const activeProvider = getActiveProvider();
+          const providerLabel = activeProvider === 'google'
+            ? 'Google'
+            : activeProvider === 'openai'
+              ? getOpenAIProviderLabel()
+              : (shouldUseAnthropicProxy() ? 'Anthropic proxy' : 'Anthropic');
+          if (err?.missingApiKey === true) {
+            openMissingApiKeyOverlay(providerLabel);
+          } else {
             openErrorOverlay({
-              title: 'Paid mode unavailable',
-              subtitle: 'Paid worker endpoint is not configured.',
+              title: 'Request failed',
+              subtitle: err?.message || `Unable to reach ${providerLabel}.`,
             });
-            return;
           }
-          if (getActiveProvider() !== 'google') {
-            const paidModelId = getPaidModeModelId(getActiveModelName());
-            if (!paidModelId) {
-              openErrorOverlay({
-                title: 'Paid mode unavailable',
-                subtitle: 'Paid mode supports Claude Opus 4.6/4.5, Sonnet 4.5, or Haiku 4.5 only.',
-              });
-              return;
-            }
-          }
-        }
-        if (shouldUsePaidGoogleProxy()) {
-          if (!paidWorkerEndpoint) {
-            openErrorOverlay({
-              title: 'Paid mode unavailable',
-              subtitle: 'Paid worker endpoint is not configured.',
-            });
-            return;
-          }
-          const userId = ensureUserId(() => {});
-          if (!userId) {
-            openErrorOverlay({
-              title: 'Paid mode unavailable',
-              subtitle: 'No user ID is available. Request a cookie first.',
-            });
-            return;
-          }
-        }
-        if (!shouldUsePaidModeRequests() && !shouldUsePaidGoogleProxy()) {
-          try {
-            getProviderConfig();
-          } catch (err) {
-            const activeProvider = getActiveProvider();
-            const providerLabel = activeProvider === 'google'
-              ? 'Google'
-              : activeProvider === 'openai'
-                ? getOpenAIProviderLabel()
-                : (shouldUseAnthropicProxy() ? 'Anthropic proxy' : 'Anthropic');
-            if (err?.missingApiKey === true) {
-              openMissingApiKeyOverlay(providerLabel);
-            } else {
-              openErrorOverlay({
-                title: 'Request failed',
-                subtitle: err?.message || `Unable to reach ${providerLabel}.`,
-              });
-            }
-            return;
-          }
+          return;
         }
         wasUserStopRequested = false;
         const activityUserId = ensureUserId(() => {});
